@@ -1,0 +1,8 @@
+Error 1:    0    Die Datei welche erstellt werden sollte ist bereits vorhanden
+Error 2:    1    Die Datei wurde nicht gefunden
+Error 3:    1    Die Daten konnten nich ausgelesen werden
+Error 4:    1    Der Graph konnte nicht gezeigt werden
+Error 5:    1    Die Datei konnte nicht erstellt werden
+Error 6:    1    Die Aktie kann nicht verkauft werden das sie sie nicht besitzen deep!
+Error 7:    1    Du kannst nicht mehr Aktien verkaufen als du besitzt du Genie
+Error 8:    1    Der Verkauf kann nicht durchgeführt werden da diese ID nicht existiert
