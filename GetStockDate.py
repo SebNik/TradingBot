@@ -11,4 +11,4 @@ ts = TimeSeries(key=API_KEY,output_format='pandas')
 data, meta_data = ts.get_intraday(symbol=symbol,interval=interval, outputsize=outputsize)
 
 print(data.head())
-data.to_csv('/home/niklas/Desktop/TradingBot/StockData/' + 'out.csv')
+data.to_csv('/home/niklas/Desktop/TradingBot/StockData/' + 'StockData-' + symbol + '-' + interval +'.csv')
