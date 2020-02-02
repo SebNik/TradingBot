@@ -26,5 +26,5 @@ if __name__ == "__main__":
     outputsize='compact'
     data,meta_data=get_data_intraday(API_KEY,symbol,interval,outputsize)
     print(meta_data)
-    print(data.head(2))
+    print(data.head(1))
     print(get_data_latest(API_KEY,symbol)['05. price'])
