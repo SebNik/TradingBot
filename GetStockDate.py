@@ -1,6 +1,13 @@
 #all data is from GMT-5 -> Time Germany -6
 
-def get_data_intraday(API_KEY,symbol,interval,outputsize,savingtoCsv=True):
+def api_key_finder():
+    #500 requests a day
+    #5 per min
+    api_keys=['U5C8JI4ELG45JNT7','L7C6HSQARL8LR5E4','D7TUJ5FRXFV44XPO','2EGXAE0H594DZ9U5']
+    trading_hours=7
+    resolution_data=(7*60*60)
+
+def get_data_intraday(symbol,interval,outputsize,savingtoCsv=True):
     #gets data over a periode of a day
     from alpha_vantage.timeseries import TimeSeries
 
@@ -10,17 +17,20 @@ def get_data_intraday(API_KEY,symbol,interval,outputsize,savingtoCsv=True):
         data.to_csv('/home/niklas/Desktop/TradingBot/StockData/' + 'StockData-' + symbol + '-' + interval +'.csv',sep=';')
     return data,meta_data
 
-def get_data_latest(API_KEY,symbol,savingtoCsv=False):
+def get_data_latest(symbol,savingtoCsv=False):
     #reads the latest data of the API
     #get changes of the last day
     from alpha_vantage.timeseries import TimeSeries
-
+    API_KEY=
     ts = TimeSeries(key=API_KEY,output_format='pandas')
     data = ts.get_quote_endpoint(symbol=symbol)
     return data[0]
 
 if __name__ == "__main__":
     API_KEY = 'U5C8JI4ELG45JNT7'
+    API_KEY_2='L7C6HSQARL8LR5E4'
+    API_KEY_3='D7TUJ5FRXFV44XPO'
+    API_KEY_4='2EGXAE0H594DZ9U5'
     symbol='MSFT'
     interval='1min'
     outputsize='compact'
