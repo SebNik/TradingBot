@@ -6,7 +6,7 @@ import time
 from time import gmtime, strftime
 
 API_KEY = 'U5C8JI4ELG45JNT7'
-symbol='MSFT'
+symbol='AAPL'
 interval='1min'
 outputsize='compact'
 
@@ -14,8 +14,8 @@ while True:
     time=strftime("%Y-%m-%d %A %H:%M:%S", gmtime())
     time_day=strftime("%A", gmtime())
     time_hour=strftime("%H", gmtime())
-    f = open("log.txt", "w")
-    f.write(time)
+    f = open("log.txt", "a")
+    f.write(time+'\n')
     f.close()
     if time_day!="Sunday" and time_day!="Saturday" and int(time_hour)-4>8 and int(time_hour)-4<17:
         d,m=GetStockDate.get_data_intraday(API_KEY,symbol,interval,outputsize)
