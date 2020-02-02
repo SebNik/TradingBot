@@ -1,11 +1,14 @@
 from alpha_vantage.timeseries import TimeSeries
-import matplotlib.pyplot as plt
+import csv
+import pandas as pd
 
 API_KEY = 'U5C8JI4ELG45JNT7'
+symbol='MSFT'
+interval='1min'
+outputsize='compact'
 
 ts = TimeSeries(key=API_KEY,output_format='pandas')
-data, meta_data = ts.get_intraday(symbol='MSFT',interval='1min', outputsize='full')
-print(data)
-data['4. close'].plot()
-plt.title('Intraday TimeSeries Google')
-plt.show()
+data, meta_data = ts.get_intraday(symbol=symbol,interval=interval, outputsize=outputsize)
+
+print(data.head())
+data.to_csv('/home/niklas/Desktop/TradingBot/StockData/' + 'out.csv')
