@@ -1,11 +1,15 @@
 #all data is from GMT-5 -> Time Germany -6
 
 def api_key_finder():
-    #500 requests a day
-    #5 per min
+    #selctes the right api key for maximal sucees
+    #500 requests a day -- 5 per min
     api_keys=['U5C8JI4ELG45JNT7','L7C6HSQARL8LR5E4','D7TUJ5FRXFV44XPO','2EGXAE0H594DZ9U5']
     trading_hours=7
-    resolution_data=(7*60*60)
+    resolution_data=((trading_hours*60*60)/500)/len(api_keys)
+    #gives how many seconds are between possible requests
+    if resolution_data<6:
+        #not enough keys to many requests 5 requests per min
+
 
 def get_data_intraday(symbol,interval,outputsize,savingtoCsv=True):
     #gets data over a periode of a day
