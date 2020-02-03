@@ -14,7 +14,7 @@ while True:
     time_day=strftime("%A", gmtime())
     time_hour=strftime("%H", gmtime())
     f = open("log.txt", "a")
-    if time_day!="Sunday" and time_day!="Saturday" and int(time_hour)-5>7 and int(time_hour)-5<17:
+    if time_day!="Sunday" and time_day!="Saturday" and int(time_hour)-5>9 and int(time_hour)-5<17:
         d,m=GetStockDate.get_data_intraday(symbol,interval,outputsize)
         latest_data=GetStockDate.get_data_latest(symbol)['05. price']
         #print(latest_data+'------------'+d.head(1))

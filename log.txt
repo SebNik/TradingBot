@@ -1,3 +1,36 @@
  309.5100------------date
  309.39
 -------------
+ 309.5100------------date
+ 309.39
+-------------
+2020-02-03 Monday 13:43:35Monday13
+2020-02-03 Monday 13:44:25Monday13
+2020-02-03 Monday 13:45:16Monday13
+2020-02-03 Monday 13:46:06Monday13
+2020-02-03 Monday 13:46:57Monday13
+2020-02-03 Monday 13:47:47Monday13
+2020-02-03 Monday 13:48:38Monday13
+2020-02-03 Monday 13:49:28Monday13
+2020-02-03 Monday 13:50:18Monday13
+2020-02-03 Monday 13:51:09Monday13
+2020-02-03 Monday 13:51:59Monday13
+2020-02-03 Monday 13:52:50Monday13
+2020-02-03 Monday 13:53:40Monday13
+2020-02-03 Monday 13:54:31Monday13
+2020-02-03 Monday 13:55:21Monday13
+2020-02-03 Monday 13:56:12Monday13
+2020-02-03 Monday 13:57:02Monday13
+2020-02-03 Monday 13:57:52Monday13
+2020-02-03 Monday 13:58:43Monday13
+2020-02-03 Monday 13:59:33Monday13
+2020-02-03 Monday 14:00:24Monday14
+2020-02-03 Monday 14:01:14Monday14
+2020-02-03 Monday 14:02:05Monday14
+2020-02-03 Monday 14:02:55Monday14
+ 311.1800------------date
+ 311.22
+-------------
+ 311.0200------------date
+ 311.1752
+-------------
