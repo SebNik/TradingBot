@@ -3,7 +3,6 @@
 
 import GetStockDate
 from time import gmtime, strftime,sleep
-import pandas as pd
 
 symbol='AAPL'
 interval='1min'
