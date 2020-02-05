@@ -34,8 +34,11 @@ def api_key_finder():
     #starting to check
     if (last_api_key_log[0]==time_day):
         if (api_keys[int(last_api_key_log[2])]==last_api_key_log[3]):
-            selected_api_key=api_keys[int(last_api_key_log[2])+1]
-            f.write(time+'-'+str(int(last_api_key_log[2])+1)+'-'+selected_api_key+'-'+str(int(last_api_key_log[4])+1)+'\n')
+            no=int(last_api_key_log[2])+1
+            if (no==len(api_keys)):
+                no=0
+            selected_api_key=api_keys[no]
+            f.write(time+'-'+str(no)+'-'+selected_api_key+'-'+str(int(last_api_key_log[4])+1)+'\n')
     else:
         from random import randint
         no=randint(0,len(api_keys)-1)
@@ -43,6 +46,7 @@ def api_key_finder():
         f.write(time+'-'+str(no)+'-'+selected_api_key+'-'+'0'+'\n')
     f.close()
     #closing and saving file
+    return selected_api_key
 
 
 def get_data_intraday(symbol,interval,outputsize,savingtoCsv=True):
@@ -76,7 +80,6 @@ if __name__ == "__main__":
     #print(meta_data)
     #print(data.head(1))
     #print(get_data_latest(API_KEY,symbol)['05. price'])
-    print(api_key_finder())
     print(api_key_finder())
     print(api_key_finder())
     print(api_key_finder())
