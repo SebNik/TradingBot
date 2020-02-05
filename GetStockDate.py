@@ -52,7 +52,7 @@ def api_key_finder():
 def get_data_intraday(symbol,interval,outputsize,savingtoCsv=True):
     #gets data over a periode of a day
     from alpha_vantage.timeseries import TimeSeries
-
+    API_KEY = 'U5C8JI4ELG45JNT7'
     ts = TimeSeries(key=API_KEY,output_format='pandas')
     data, meta_data = ts.get_intraday(symbol=symbol,interval=interval, outputsize=outputsize)
     if savingtoCsv:
