@@ -22,4 +22,4 @@ while True:
     else:
         f.write(time+time_day+time_hour+'\n')
     f.close()
-    sleep((7*60*60)/500)
+    sleep(float(r))

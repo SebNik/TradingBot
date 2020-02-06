@@ -9,8 +9,11 @@ def api_key_finder():
     api_keys=['U5C8JI4ELG45JNT7','L7C6HSQARL8LR5E4','D7TUJ5FRXFV44XPO','2EGXAE0H594DZ9U5']
     selected_api_key=''
     #log format:%Y+%m+%d-%A+%H:%M:%S-APIKEYNO-APIKEY-requests
-    trading_hours=6.5
-    resolution_data=((trading_hours*60*60)/500)/len(api_keys)
+    closing_sec=16*60*60
+    trading_sec=closing_sec-(((int(strftime("%H", gmtime()))-5)*60)+int(strftime("%M", gmtime())))*60
+    #how many seconds are left for the day in trading
+    resolution_data=(trading_sec/500)/len(api_keys)
+    #print(resolution_data)
     #gives how many seconds are between possible requests
     calls_per_key_per_min=60/resolution_data*len(api_keys)
     if calls_per_key_per_min<6:
