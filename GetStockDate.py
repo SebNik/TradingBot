@@ -52,11 +52,15 @@ def api_key_finder():
 def get_data_intraday(symbol,interval,outputsize,savingtoCsv=True):
     #gets data over a periode of a day
     from alpha_vantage.timeseries import TimeSeries
+    from time import gmtime, strftime
+    #time for saving
     API_KEY,waiting_times=api_key_finder()
     ts = TimeSeries(key=API_KEY,output_format='pandas')
+    time=strftime("%Y-%m-%d-%A", gmtime())
     data, meta_data = ts.get_intraday(symbol=symbol,interval=interval, outputsize=outputsize)
     if savingtoCsv:
-        data.to_csv('/home/niklas/Desktop/TradingBot/StockData/' + 'StockData-' + symbol + '-' + interval +'.csv',sep=';')
+        data.to_csv('/home/niklas/Desktop/TradingBot/StockData/' + 'StockData-' + symbol + '-' + interval + '-' + time + '.csv',sep=';')
+        #saved data csv-file data
     return data,meta_data,waiting_times
 
 def get_data_latest(symbol,savingtoCsv=False):
