@@ -6,7 +6,7 @@ def api_key_finder():
     import os
     #500 requests a day -- 5 per min
     file_api='api-key_logs.txt'
-    api_keys=['U5C8JI4ELG45JNT7','L7C6HSQARL8LR5E4','D7TUJ5FRXFV44XPO','2EGXAE0H594DZ9U5']
+    api_keys=['U5C8JI4ELG45JNT7','L7C6HSQARL8LR5E4','D7TUJ5FRXFV44XPO','2EGXAE0H594DZ9U5','UNK3NBPC8S27EKHN','ZX686301JW1AMF8I','DI2GYUJXWL8OL030']
     selected_api_key=''
     #log format:%Y+%m+%d-%A+%H:%M:%S-APIKEYNO-APIKEY-requests
     closing_sec=16*60*60
@@ -79,9 +79,10 @@ if __name__ == "__main__":
     symbol='MSFT'
     interval='1min'
     outputsize='compact'
-    data,meta_data,waiting_times=get_data_intraday(symbol,interval,outputsize)
-    data_latest,waiting_times=get_data_latest(symbol)
-    print(waiting_times)
-    print(meta_data)
-    print(data.head(1))
-    print(data_latest['05. price'])
+    for i in range(0,10):
+        data,meta_data,waiting_times=get_data_intraday(symbol,interval,outputsize)
+        data_latest,waiting_times=get_data_latest(symbol)
+        print(waiting_times)
+        print(meta_data)
+        print(data.head(1))
+        print(data_latest['05. price'])
