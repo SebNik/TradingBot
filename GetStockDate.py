@@ -68,6 +68,22 @@ def get_data_intraday(symbol, interval, outputsize, savingtoCsv=True):
         # saved data csv-file data
     return data, meta_data, waiting_times
 
+def get_data_daily(symbol, outputsize, savingtoCsv=True):
+    # gets data over of a day the daily open, daily high, daily low, daily close, daily volume
+    # with full all data until 2020 is shown, with compact the last 100 days
+    from alpha_vantage.timeseries import TimeSeries
+    from time import gmtime, strftime
+    # time for saving
+    API_KEY, waiting_times = api_key_finder()
+    ts = TimeSeries(key=API_KEY, output_format='pandas')
+    time = strftime("%Y-%m-%d-%A", gmtime())
+    data, meta_data = ts.get_daily(symbol=symbol, outputsize=outputsize)
+    if savingtoCsv:
+        data.to_csv(
+            '/home/niklas/Desktop/TradingBot/StockData/' + 'StockData-Daily-' + symbol + '-' + outputsize + '-' + time + '.csv',
+            sep=';')
+        # saved data csv-file data
+    return data, meta_data, waiting_times
 
 def get_data_latest(symbol, savingtoCsv=False):
     # reads the latest data of the API
@@ -85,11 +101,13 @@ if __name__ == "__main__":
     symbol = 'MSFT'
     interval = '1min'
     outputsize = 'compact'
-    for i in range(0, 10):
-        data, meta_data, waiting_times = get_data_intraday(symbol, interval, outputsize)
-        data_latest, waiting_times = get_data_latest(symbol)
-        print(waiting_times)
-        print(meta_data)
-        print(data.head(1))
-        print(data_latest['05. price'])
-        time.sleep(5)
+    # for i in range(0, 10):
+    #     data, meta_data, waiting_times = get_data_intraday(symbol, interval, outputsize)
+    #     data_latest, waiting_times = get_data_latest(symbol)
+    #     print(waiting_times)
+    #     print(meta_data)
+    #     print(data.head(1))
+    #     print(data_latest['05. price'])
+    #     time.sleep(5)
+    data_daily, meta_data, waiting_times = get_data_daily(symbol, outputsize)
+    print(data_daily.head())
