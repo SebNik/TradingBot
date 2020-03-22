@@ -4,7 +4,7 @@ def api_key_finder():
     from time import gmtime, strftime
     import os
     # 500 requests a day -- 5 per min
-    file_api = 'api-key_logs.txt'
+    file_api = '/home/niklas/Desktop/TradingBot/api-key_logs.txt'
     api_keys = ['U5C8JI4ELG45JNT7', 'L7C6HSQARL8LR5E4', 'D7TUJ5FRXFV44XPO', '2EGXAE0H594DZ9U5', 'UNK3NBPC8S27EKHN',
                 'ZX686301JW1AMF8I', 'DI2GYUJXWL8OL030']
     selected_api_key = ''
@@ -66,7 +66,7 @@ def get_data_intraday(symbol, interval, outputsize, savingtoCsv=True):
             '/home/niklas/Desktop/TradingBot/StockData/' + 'StockData-' + symbol + '-' + interval + '-' + time + '.csv',
             sep=';')
         # saved data csv-file data
-    return data, meta_data, waiting_times
+    return data, meta_data  # , waiting_times
 
 
 def get_data_daily(symbol, outputsize, savingtoCsv=True):
@@ -84,7 +84,7 @@ def get_data_daily(symbol, outputsize, savingtoCsv=True):
             '/home/niklas/Desktop/TradingBot/StockData/' + 'StockData-Daily-' + symbol + '-' + outputsize + '-' + time + '.csv',
             sep=';')
         # saved data csv-file data
-    return data, meta_data, waiting_times
+    return data, meta_data  #, waiting_times
 
 
 def get_data_weekly(symbol, savingtoCsv=True):
