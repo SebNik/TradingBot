@@ -1,7 +1,7 @@
 # This program will test if the realtime data works
 # Moreover it will test if the latest data works as well
 
-import GetStockDate
+import GetStockData
 from time import gmtime, strftime, sleep
 
 symbol = 'AAPL'
@@ -15,8 +15,8 @@ while True:
     f = open("log.txt", "a")
     r = 60
     if time_day != "Sunday" and time_day != "Saturday" and int(time_hour) - 5 > 9 and int(time_hour) - 5 < 17:
-        d, m, r = GetStockDate.get_data_intraday(symbol, interval, outputsize)
-        latest_data, r = GetStockDate.get_data_latest(symbol)
+        d, m, r = GetStockData.get_data_intraday(symbol, interval, outputsize)
+        latest_data, r = GetStockData.get_data_latest(symbol)
         latest_data = latest_data['05. price']
         # print(latest_data+'------------'+d.head(1))
         f.write(latest_data.to_string(index=False) + '------------' + d.head(1)['4. close'].to_string(
