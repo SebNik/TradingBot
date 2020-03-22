@@ -99,7 +99,25 @@ def get_data_weekly(symbol, savingtoCsv=True):
     data, meta_data = ts.get_weekly(symbol=symbol)
     if savingtoCsv:
         data.to_csv(
-            '/home/niklas/Desktop/TradingBot/StockData/' + 'StockData-Weekly-' + symbol + '-' + '-' + time + '.csv',
+            '/home/niklas/Desktop/TradingBot/StockData/' + 'StockData-Weekly-' + symbol + '-' + time + '.csv',
+            sep=';')
+        # saved data csv-file data
+    return data, meta_data, waiting_times
+
+
+def get_data_monthly(symbol, savingtoCsv=True):
+    # gets data over of a week
+    # with full all data until 2000 is shown, with compact the last 100 days
+    from alpha_vantage.timeseries import TimeSeries
+    from time import gmtime, strftime
+    # time for saving
+    API_KEY, waiting_times = api_key_finder()
+    ts = TimeSeries(key=API_KEY, output_format='pandas')
+    time = strftime("%Y-%m-%d-%A", gmtime())
+    data, meta_data = ts.get_monthly(symbol=symbol)
+    if savingtoCsv:
+        data.to_csv(
+            '/home/niklas/Desktop/TradingBot/StockData/' + 'StockData-Monthly-' + symbol + '-' + time + '.csv',
             sep=';')
         # saved data csv-file data
     return data, meta_data, waiting_times
@@ -133,7 +151,11 @@ if __name__ == "__main__":
     # data_daily, meta_data, waiting_times = get_data_daily(symbol, outputsize)
     # print(data_daily.head())
     # <-
-    # Test for daily ->
-    data_daily, meta_data, waiting_times = get_data_weekly(symbol)
-    print(data_daily.head())
+    # Test for weekly ->
+    # data, meta_data, waiting_times = get_data_weekly(symbol)
+    # print(data.head())
+    # <-
+    # Test for monthly ->
+    data, meta_data, waiting_times = get_data_monthly(symbol)
+    print(data.head())
     # <-
