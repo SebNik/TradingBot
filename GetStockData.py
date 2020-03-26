@@ -4,12 +4,30 @@ def api_key_finder():
     # selects the right api key for maximal success
     from time import gmtime, strftime
     import os
+    import sqlite3
     # 500 requests a day -- 5 per min
-    file_api = '/home/niklas/Desktop/TradingBot/api-key_logs.txt'
+
+    file_api = '/home/niklas/Desktop/TradingBot/api-key_logs.db'
+    if not os.path.isfile(file_api):
+        conn = sqlite3.connect(file_api)
+        c = conn.cursor()
+        c.execute('CREATE TABLE ApiKeyLog (id INTEGER, date TEXT, ApiKeyNo TEXT, ApiKey TEXT)')
+    else:
+        conn = sqlite3.connect(file_api)
+        c = conn.cursor()
+
+    # # Insert a row of data
+    # c.execute("INSERT INTO ApiKeyLog VALUES ('2006-01-05','BUY','RHAT',100,35.14)")
+    # conn.commit()
+    # data = c.execute("SELECT * FROM stocks")
+    # for i in data:
+    #     print(i)
+    # conn.close()
     api_keys = ['U5C8JI4ELG45JNT7', 'L7C6HSQARL8LR5E4', 'D7TUJ5FRXFV44XPO', '2EGXAE0H594DZ9U5', 'UNK3NBPC8S27EKHN',
                 'ZX686301JW1AMF8I', 'DI2GYUJXWL8OL030']
     selected_api_key = ''
-    # log format:%Y+%m+%d-%A+%H:%M:%S-APIKEYNO-APIKEY-requests
+    # date TEXT, api-key-no INTEGER, api-key TEXT, counter INTEGER
+    # %Y+%m+%d-%A+%H:%M:%S APIKEYNO APIKEY counter
     closing_sec = 16 * 60 * 60
     trading_sec = closing_sec - (((int(strftime("%H", gmtime())) - 5) * 60) + int(strftime("%M", gmtime()))) * 60
     # how many seconds are left for the day in trading
@@ -22,19 +40,23 @@ def api_key_finder():
         while calls_per_key_per_min < 6:
             calls_per_key_per_min = 60 / resolution_data * len(api_keys)
             resolution_data += 0.25
-    # ideal call time is resoulution_data
-    if not os.path.isfile(file_api):
-        f = open(file_api, 'x')
-        f.write('-Logs of APIs-\n')
-        f.close()
-    f = open(file_api, 'r')
-    api_key_logs = f.readlines()
-    last_api_key_log = api_key_logs[-1].split('-')
-    f.close()
+    # ideal call time is resolution_data
     time = strftime("%Y+%m+%d-%A+%H:%M:%S", gmtime())
     time_day = strftime("%Y+%m+%d", gmtime())
-    # opens for logging
-    f = open(file_api, 'a')
+    # getting data from sqlite3
+    c.execute("SELECT * FROM ApiKeyLog ORDER BY id DESC LIMIT 1")
+    last_line = c.fetchone()
+    # prepare the last line for checking
+    if last_line is not None:
+        out = [item for item in last_line]
+        last_api_key_log = [out[1].split('-')[0], out[1].split('-')[1], out[2], out[3], out[0]]
+    # check if nothing is in the database and check the
+    if last_line is None:
+        from random import randint
+        no = randint(0, len(api_keys) - 1)
+        selected_api_key = api_keys[no]
+        c.execute("INSERT INTO ApiKeyLog VALUES (0,?,?,?)", (time, str(no), selected_api_key))
+        conn.commit()
     # starting to check
     if last_api_key_log[0] == time_day:
         if api_keys[int(last_api_key_log[2])] == last_api_key_log[3]:
@@ -42,13 +64,10 @@ def api_key_finder():
             if no == len(api_keys):
                 no = 0
             selected_api_key = api_keys[no]
-            f.write(time + '-' + str(no) + '-' + selected_api_key + '-' + str(int(last_api_key_log[4]) + 1) + '\n')
-    else:
-        from random import randint
-        no = randint(0, len(api_keys) - 1)
-        selected_api_key = api_keys[no]
-        f.write(time + '-' + str(no) + '-' + selected_api_key + '-' + '0' + '\n')
-    f.close()
+            c.execute("INSERT INTO ApiKeyLog VALUES (?,?,?,?)",
+                      (int(last_api_key_log[4]) + 1, time, str(no), selected_api_key))
+            conn.commit()
+    conn.close()
     # closing and saving file
     return selected_api_key, str(resolution_data)
 
@@ -135,28 +154,4 @@ def get_data_latest(symbol, savingtoCsv=False):
 
 
 if __name__ == "__main__":
-    import time
-
-    symbol = 'MSFT'
-    interval = '1min'
-    outputsize = 'compact'
-    # for i in range(0, 10):
-    #     data, meta_data, waiting_times = get_data_intraday(symbol, interval, outputsize)
-    #     data_latest, waiting_times = get_data_latest(symbol)
-    #     print(waiting_times)
-    #     print(meta_data)
-    #     print(data.head(1))
-    #     print(data_latest['05. price'])
-    #     time.sleep(5)
-    # Test for daily ->
-    # data_daily, meta_data, waiting_times = get_data_daily(symbol, outputsize)
-    # print(data_daily.head())
-    # <-
-    # Test for weekly ->
-    # data, meta_data, waiting_times = get_data_weekly(symbol)
-    # print(data.head())
-    # <-
-    # Test for monthly ->
-    data, meta_data, waiting_times = get_data_monthly(symbol)
-    print(data.head())
-    # <-
+    api_key_finder()

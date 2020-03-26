@@ -11,14 +11,14 @@ def check_database():
     if not os.path.isfile('test.db'):
         conn = sqlite3.connect('test.db')
         c = conn.cursor()
-        c.execute('''CREATE TABLE stocks
-                         (date text, trans text, symbol text, qty real, price real)''')
+        c.execute('CREATE TABLE stocks (date TEXT, trans text, symbol text, qty real, price real)')
     else:
         conn = sqlite3.connect('test.db')
         c = conn.cursor()
 
     # Insert a row of data
     c.execute("INSERT INTO stocks VALUES ('2006-01-05','BUY','RHAT',100,35.14)")
+    c.execute("INSERT INTO stocks VALUES (?,?,?,5,5);", ('213', 'RHAT', '5'))
     conn.commit()
     data = c.execute("SELECT * FROM stocks")
     for i in data:
