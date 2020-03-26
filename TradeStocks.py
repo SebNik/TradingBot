@@ -1,9 +1,14 @@
 # this file is responsible for all buying and selling actions and their logging
+class Stock:
+    def __init__(self):
+        None
+
+
 def check_database():
     import sqlite3
     import os
 
-    if os.path.isfile('test.db') == False:
+    if not os.path.isfile('test.db'):
         conn = sqlite3.connect('test.db')
         c = conn.cursor()
         c.execute('''CREATE TABLE stocks
