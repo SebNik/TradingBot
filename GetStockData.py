@@ -1,3 +1,4 @@
+# this code is reading the stock data
 # all data is from GMT-5 -> Time Germany -6
 def api_key_finder():
     # selects the right api key for maximal success
