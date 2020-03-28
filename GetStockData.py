@@ -16,13 +16,6 @@ def api_key_finder():
         conn = sqlite3.connect(file_api)
         c = conn.cursor()
 
-    # # Insert a row of data
-    # c.execute("INSERT INTO ApiKeyLog VALUES ('2006-01-05','BUY','RHAT',100,35.14)")
-    # conn.commit()
-    # data = c.execute("SELECT * FROM stocks")
-    # for i in data:
-    #     print(i)
-    # conn.close()
     api_keys = ['U5C8JI4ELG45JNT7', 'L7C6HSQARL8LR5E4', 'D7TUJ5FRXFV44XPO', '2EGXAE0H594DZ9U5', 'UNK3NBPC8S27EKHN',
                 'ZX686301JW1AMF8I', 'DI2GYUJXWL8OL030']
     selected_api_key = ''
@@ -76,7 +69,21 @@ def get_data_intraday(symbol, interval, outputsize, savingtoCsv=True):
     # gets data over a periode of a day
     from alpha_vantage.timeseries import TimeSeries
     from time import gmtime, strftime
-    # time for saving
+    import sqlite3
+    import os
+    # time for loading the database
+    file = '/home/niklas/Desktop/TradingBot/StockData/StockData-{}.db'.format(symbol)
+    if not os.path.isfile(file):
+        conn = sqlite3.connect(file)
+        c = conn.cursor()
+        sql = "INSERT INTO {} VALUES".format(x)
+        c.execute(
+            'CREATE TABLE IntraDay-{} (date1 TEXT, open2 REAL, high3 REAL, low4 REAL, close5 REAL, volume REAL)'.format(
+                symbol))
+    else:
+        conn = sqlite3.connect(file)
+        c = conn.cursor()
+    sql = "INSERT INTO {} VALUES".format(x)
     API_KEY, waiting_times = api_key_finder()
     ts = TimeSeries(key=API_KEY, output_format='pandas')
     time = strftime("%Y-%m-%d-%A", gmtime())
@@ -104,7 +111,7 @@ def get_data_daily(symbol, outputsize, savingtoCsv=True):
             '/home/niklas/Desktop/TradingBot/StockData/' + 'StockData-Daily-' + symbol + '-' + outputsize + '-' + time + '.csv',
             sep=';')
         # saved data csv-file data
-    return data, meta_data  #, waiting_times
+    return data, meta_data  # , waiting_times
 
 
 def get_data_weekly(symbol, savingtoCsv=True):
