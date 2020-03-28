@@ -65,12 +65,28 @@ def api_key_finder():
     return selected_api_key, str(resolution_data)
 
 
-def get_data_intraday(symbol, interval, outputsize, savingtoCsv=True):
+def get_data_intraday(symbol, interval, outputsize, savingtoCsv=False):
     # gets data over a periode of a day
     from alpha_vantage.timeseries import TimeSeries
     from time import gmtime, strftime
     import sqlite3
     import os
+    # loading stock prices
+    # getting the right api key
+    API_KEY, waiting_times = api_key_finder()
+    print(API_KEY)
+    # setting the reading data
+    ts = TimeSeries(key=API_KEY, output_format='pandas')
+    # reading the right time
+    time = strftime("%Y-%m-%d-%A", gmtime())
+    # geting the final data
+    data, meta_data = ts.get_intraday(symbol=symbol, interval=interval, outputsize=outputsize)
+    # check if need to save to CSV-File
+    if savingtoCsv:
+        data.to_csv(
+            '/home/niklas/Desktop/TradingBot/StockData/' + 'StockData-' + symbol + '-' + interval + '-' + time + '.csv',
+            sep=';')
+        # saved data csv-file data
     # time for loading the database
     file = '/home/niklas/Desktop/TradingBot/StockData/StockData-{}.db'.format(symbol)
     if not os.path.isfile(file):
@@ -79,20 +95,32 @@ def get_data_intraday(symbol, interval, outputsize, savingtoCsv=True):
         sql = "INSERT INTO {} VALUES".format(x)
         c.execute(
             'CREATE TABLE IntraDay-{} (date1 TEXT, open2 REAL, high3 REAL, low4 REAL, close5 REAL, volume REAL)'.format(
-                symbol))
+                symbol + '-' + interval))
     else:
         conn = sqlite3.connect(file)
         c = conn.cursor()
-    sql = "INSERT INTO {} VALUES".format(x)
-    API_KEY, waiting_times = api_key_finder()
-    ts = TimeSeries(key=API_KEY, output_format='pandas')
-    time = strftime("%Y-%m-%d-%A", gmtime())
-    data, meta_data = ts.get_intraday(symbol=symbol, interval=interval, outputsize=outputsize)
-    if savingtoCsv:
-        data.to_csv(
-            '/home/niklas/Desktop/TradingBot/StockData/' + 'StockData-' + symbol + '-' + interval + '-' + time + '.csv',
-            sep=';')
-        # saved data csv-file data
+    # now the database is connected through
+    # next we are going to check if the table already exists
+    tablename = 'IntraDay-{}'.format(symbol + '-' + interval)
+    stmt = "SELECT name FROM sqlite_master WHERE type='table' AND name='{}';".format(tablename)
+    c.execute(stmt)
+    result = c.fetchone()
+    if result:
+        # table found
+        None
+    else:
+        # table not found
+        c.execute(
+            'CREATE TABLE IntraDay-{} (date1 TEXT, open2 REAL, high3 REAL, low4 REAL, close5 REAL, volume REAL)'.format(
+                symbol + '-' + interval))
+    # reading data from database
+    data = c.execute("SELECT * FROM {}".format(tablename))
+    last_line_table = data[-1]
+    # starting to insert data into table
+    sql = "INSERT INTO {} VALUES".format(tablename)
+    # last line None nothing in so putting new in
+    data.to_sql(tablename, conn, if_exists="replace")
+
     return data, meta_data  # , waiting_times
 
 
@@ -161,4 +189,4 @@ def get_data_latest(symbol, savingtoCsv=False):
 
 
 if __name__ == "__main__":
-    api_key_finder()
+    meta_data, data = get_data_intraday('AAPL', '1min', 'compact')
