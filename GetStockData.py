@@ -60,6 +60,12 @@ def api_key_finder():
             c.execute("INSERT INTO ApiKeyLog VALUES (?,?,?,?)",
                       (int(last_api_key_log[4]) + 1, time, str(no), selected_api_key))
             conn.commit()
+    else:
+        from random import randint
+        no = randint(0, len(api_keys) - 1)
+        selected_api_key = api_keys[no]
+        c.execute("INSERT INTO ApiKeyLog VALUES (0,?,?,?)", (time, str(no), selected_api_key))
+        conn.commit()
     conn.close()
     # closing and saving file
     return selected_api_key, str(resolution_data)
@@ -74,7 +80,6 @@ def get_data_intraday(symbol, interval, outputsize, savingtoCsv=False):
     # loading stock prices
     # getting the right api key
     API_KEY, waiting_times = api_key_finder()
-    print(API_KEY)
     # setting the reading data
     ts = TimeSeries(key=API_KEY, output_format='pandas')
     # reading the right time
@@ -89,19 +94,18 @@ def get_data_intraday(symbol, interval, outputsize, savingtoCsv=False):
         # saved data csv-file data
     # time for loading the database
     file = '/home/niklas/Desktop/TradingBot/StockData/StockData-{}.db'.format(symbol)
+    tablename = 'IntraDay' + symbol + interval
     if not os.path.isfile(file):
         conn = sqlite3.connect(file)
         c = conn.cursor()
-        sql = "INSERT INTO {} VALUES".format(x)
         c.execute(
-            'CREATE TABLE IntraDay-{} (date1 TEXT, open2 REAL, high3 REAL, low4 REAL, close5 REAL, volume REAL)'.format(
-                symbol + '-' + interval))
+            'CREATE TABLE {} (date1 TEXT, open2 REAL, high3 REAL, low4 REAL, close5 REAL, volume REAL)'.format(
+                tablename))
     else:
         conn = sqlite3.connect(file)
         c = conn.cursor()
     # now the database is connected through
     # next we are going to check if the table already exists
-    tablename = 'IntraDay-{}'.format(symbol + '-' + interval)
     stmt = "SELECT name FROM sqlite_master WHERE type='table' AND name='{}';".format(tablename)
     c.execute(stmt)
     result = c.fetchone()
@@ -111,8 +115,8 @@ def get_data_intraday(symbol, interval, outputsize, savingtoCsv=False):
     else:
         # table not found
         c.execute(
-            'CREATE TABLE IntraDay-{} (date1 TEXT, open2 REAL, high3 REAL, low4 REAL, close5 REAL, volume REAL)'.format(
-                symbol + '-' + interval))
+            'CREATE TABLE {} (date1 TEXT, open2 REAL, high3 REAL, low4 REAL, close5 REAL, volume REAL)'.format(
+                tablename))
     # reading data from database
     data = c.execute("SELECT * FROM {}".format(tablename))
     last_line_table = data[-1]
