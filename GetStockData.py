@@ -72,26 +72,27 @@ def api_key_finder():
 
 
 def get_data_intraday(symbol, interval, outputsize, savingtoCsv=False):
-    # gets data over a periode of a day
+    # gets data over a period of a day
+    # loading necessary modules
     from alpha_vantage.timeseries import TimeSeries
     from time import gmtime, strftime
     import sqlite3
     import os
-    # loading stock prices
+    import pandas
     # getting the right api key
     API_KEY, waiting_times = api_key_finder()
     # setting the reading data
     ts = TimeSeries(key=API_KEY, output_format='pandas')
     # reading the right time
     time = strftime("%Y-%m-%d-%A", gmtime())
-    # geting the final data
+    # getting the final data
     data, meta_data = ts.get_intraday(symbol=symbol, interval=interval, outputsize=outputsize)
     # check if need to save to CSV-File
     if savingtoCsv:
+        # saved data csv-file data
         data.to_csv(
             '/home/niklas/Desktop/TradingBot/StockData/' + 'StockData-' + symbol + '-' + interval + '-' + time + '.csv',
             sep=';')
-        # saved data csv-file data
     # time for loading the database
     file = '/home/niklas/Desktop/TradingBot/StockData/StockData-{}.db'.format(symbol)
     tablename = 'IntraDay' + symbol + interval
@@ -106,8 +107,8 @@ def get_data_intraday(symbol, interval, outputsize, savingtoCsv=False):
         c = conn.cursor()
     # now the database is connected through
     # next we are going to check if the table already exists
-    stmt = "SELECT name FROM sqlite_master WHERE type='table' AND name='{}';".format(tablename)
-    c.execute(stmt)
+    table_check = "SELECT name FROM sqlite_master WHERE type='table' AND name='{}';".format(tablename)
+    c.execute(table_check)
     result = c.fetchone()
     if result:
         # table found
@@ -118,12 +119,12 @@ def get_data_intraday(symbol, interval, outputsize, savingtoCsv=False):
             'CREATE TABLE {} (date1 TEXT, open2 REAL, high3 REAL, low4 REAL, close5 REAL, volume REAL)'.format(
                 tablename))
     # reading data from database
-    data = c.execute("SELECT * FROM {}".format(tablename))
-    last_line_table = data[-1]
-    # starting to insert data into table
-    sql = "INSERT INTO {} VALUES".format(tablename)
-    # last line None nothing in so putting new in
-    data.to_sql(tablename, conn, if_exists="replace")
+    data_db = c.execute("SELECT * FROM {}".format(tablename))
+    rows = data_db.fetchall()
+    for row in rows:
+        print(row)
+    # data.to_sql(tablename, conn, if_exists="replace")
+
 
     return data, meta_data  # , waiting_times
 
@@ -193,4 +194,5 @@ def get_data_latest(symbol, savingtoCsv=False):
 
 
 if __name__ == "__main__":
-    meta_data, data = get_data_intraday('AAPL', '1min', 'compact')
+    data, meta_data = get_data_intraday('TSLA', '1min', 'compact')
+    print(data.head())
