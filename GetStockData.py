@@ -127,11 +127,12 @@ def get_data_intraday(symbol, interval, outputsize, savingtoCsv=False):
     # getting the right api key
     API_KEY, waiting_times = api_key_finder()
     # setting the reading data
-    ts = TimeSeries(key=API_KEY, output_format='pandas')
+    ts = TimeSeries(key=API_KEY, output_format='pandas', indexing_type='integer')
     # reading the right time
     time = strftime("%Y-%m-%d-%A", gmtime())
     # getting the final data
     data, meta_data = ts.get_intraday(symbol=symbol, interval=interval, outputsize=outputsize)
+    data.rename(columns={'index': 'date'}, inplace=True)
     # check if need to save to CSV-File
     if savingtoCsv:
         # saved data csv-file data
@@ -167,13 +168,16 @@ def get_data_intraday(symbol, interval, outputsize, savingtoCsv=False):
     # -----------------------------------------------------------------------------------------------------------------
     # Working on
     # -----------------------------------------------------------------------------------------------------------------
+    print(data.tail())
     import pandas as pd
-    df = pd.read_sql_query("SELECT * FROM {}".format(tablename), conn, index_col='date')
-    print(df.head())
-    new_df = pd.concat([df,data], ignore_index=False)
-    new_df.to_csv('/home/niklas/Desktop/TradingBot/StockData/test.csv')
+    df = pd.read_sql_query("SELECT * FROM {}".format(tablename), conn)#, index_col='date')
+    #print(df.head())
+    new_df = pd.concat([df,data], ignore_index=True)
+    print(new_df.tail())
+    new_df.drop_duplicates(subset='date', keep='last', inplace=True, ignore_index=True)
+    #new_df.to_csv('/home/niklas/Desktop/TradingBot/StockData/test.csv')
     print(new_df.head())
-    #print(new_df.tail())
+    print(new_df.tail())
     #data.to_sql(tablename, conn, if_exists='replace')
     #conn.commit()
     #conn.close()
