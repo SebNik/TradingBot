@@ -170,7 +170,7 @@ def get_data_intraday(symbol, interval, outputsize, savingtoCsv=False):
     # Working on
     # -----------------------------------------------------------------------------------------------------------------
     import pandas as pd
-    df = pd.read_sql_query("SELECT * from surveys", conn)
+    df = pd.read_sql_query("SELECT * from {}".format(tablename), conn)
     print(df.head())
     # -----------------------------------------------------------------------------------------------------------------
     # End
