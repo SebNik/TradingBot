@@ -110,8 +110,6 @@ def clean_df_db_dups(df, tablename, engine, dup_cols=[],
         args += ' Where ' + args_contin_filter
     elif args_cat_filter:
         args += ' Where ' + args_cat_filter
-    print('in f:')
-    print(df.head())
     df.drop_duplicates(dup_cols, keep='last', inplace=True)
     df = pd.merge(df, pd.read_sql(args, engine), how='left', on=dup_cols, indicator=True)
     df = df[df['_merge'] == 'left_only']
@@ -171,7 +169,7 @@ def get_data_intraday(symbol, interval, outputsize, savingtoCsv=False):
     # -----------------------------------------------------------------------------------------------------------------
     import pandas as pd
     df = pd.read_sql_query("SELECT * from {}".format(tablename), conn)
-    print(df.head())
+    new_df = clean_df_db_dups(df,tablename,conn,['date1'])
     # -----------------------------------------------------------------------------------------------------------------
     # End
     # -----------------------------------------------------------------------------------------------------------------
@@ -245,4 +243,4 @@ def get_data_latest(symbol, savingtoCsv=False):
 
 if __name__ == "__main__":
     data, meta_data = get_data_intraday('TSLA', '1min', 'compact')
-    print(data.head())
+    #print(data.head())
