@@ -130,15 +130,10 @@ def get_data_intraday(symbol, interval, outputsize, savingtoCsv=False):
     # gets data over a period of a day
     # loading necessary modules
     from alpha_vantage.timeseries import TimeSeries
-    from time import gmtime, strftime
-    import sqlite3
-    import os
     # getting the right api key
     API_KEY, waiting_times = api_key_finder()
     # setting the reading data
     ts = TimeSeries(key=API_KEY, output_format='pandas', indexing_type='integer')
-    # reading the right time
-    time = strftime("%Y-%m-%d-%A", gmtime())
     # getting the final data
     data, meta_data = ts.get_intraday(symbol=symbol, interval=interval, outputsize=outputsize)
     # writing data to database and csv
@@ -151,17 +146,12 @@ def get_data_daily(symbol, outputsize, savingtoCsv=True):
     # gets data over of a day the daily open, daily high, daily low, daily close, daily volume
     # with full all data until 2000 is shown, with compact the last 100 days
     from alpha_vantage.timeseries import TimeSeries
-    from time import gmtime, strftime
-    # time for saving
+    # time for collecting data
     API_KEY, waiting_times = api_key_finder()
     ts = TimeSeries(key=API_KEY, output_format='pandas')
-    time = strftime("%Y-%m-%d-%A", gmtime())
     data, meta_data = ts.get_daily(symbol=symbol, outputsize=outputsize)
-    if savingtoCsv:
-        data.to_csv(
-            '/home/niklas/Desktop/TradingBot/StockData/' + 'StockData-Daily-' + symbol + '-' + outputsize + '-' + time + '.csv',
-            sep=';')
-        # saved data csv-file data
+    # writing data to database and csv
+    wrtite_to_database(data, 'Daily', symbol, 'daily', savingtoCsv)
     return data, meta_data  # , waiting_times
 
 
@@ -213,5 +203,5 @@ def get_data_latest(symbol, savingtoCsv=False):
 
 if __name__ == "__main__":
     data, meta_data = get_data_intraday('AAPL', '5min', 'compact', True)
-    print(data.head())
-    print(meta_data)
+    #print(data.head())
+    #print(meta_data)
