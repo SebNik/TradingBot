@@ -160,19 +160,16 @@ def get_data_daily(symbol, outputsize, savingtoCsv=True):
 
 def get_data_weekly(symbol, savingtoCsv=True):
     # gets data over of a week
-    # with full all data until 2000 is shown, with compact the last 100 days
+    # loading necessary modules
     from alpha_vantage.timeseries import TimeSeries
-    from time import gmtime, strftime
-    # time for saving
+    # getting api key
     API_KEY, waiting_times = api_key_finder()
+    # creating necessary object
     ts = TimeSeries(key=API_KEY, output_format='pandas')
-    time = strftime("%Y-%m-%d-%A", gmtime())
+    # reading data into pandas
     data, meta_data = ts.get_weekly(symbol=symbol)
-    if savingtoCsv:
-        data.to_csv(
-            '/home/niklas/Desktop/TradingBot/StockData/' + 'StockData-Weekly-' + symbol + '-' + time + '.csv',
-            sep=';')
-        # saved data csv-file data
+    # writing data to database and csv
+    wrtite_to_database(data, 'Weekly', symbol, 'weekly', savingtoCsv)
     return data, meta_data, waiting_times
 
 
