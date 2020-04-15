@@ -212,5 +212,6 @@ def get_data_latest(symbol, savingtoCsv=False):
 
 
 if __name__ == "__main__":
-    data, meta_data = get_data_intraday('TSLA', '1min', 'compact')
-    # print(data.head())
+    data, meta_data = get_data_intraday('AAPL', '5min', 'compact', True)
+    print(data.head())
+    print(meta_data)
