@@ -169,18 +169,18 @@ def get_data_intraday(symbol, interval, outputsize, savingtoCsv=False):
     # Working on
     # -----------------------------------------------------------------------------------------------------------------
     data.index.name = ' '
-    #print(data.tail())
+    # print(data.tail())
     import pandas as pd
-    df = pd.read_sql_query("SELECT * FROM {}".format(tablename), conn)#, index_col='date')
+    df = pd.read_sql_query("SELECT * FROM {}".format(tablename), conn)  # , index_col='date')
     print(df.head())
-    new_df = pd.concat([data,df], ignore_index=True)
-    #print(new_df.tail())
+    new_df = pd.concat([data, df], ignore_index=True)
+    # print(new_df.tail())
     new_df.drop_duplicates(subset='date', keep='last', inplace=True, ignore_index=True)
-    new_df.sort_values('date' ,inplace=True, ascending=False)
+    new_df.sort_values('date', inplace=True, ascending=False)
     new_df.to_csv('/home/niklas/Desktop/TradingBot/StockData/test.csv')
 
-    #print(new_df.head())
-    #print(new_df.tail())
+    # print(new_df.head())
+    # print(new_df.tail())
     new_df.to_sql(tablename, conn, if_exists='replace', index=False)
     conn.commit()
     conn.close()
