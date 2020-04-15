@@ -147,8 +147,11 @@ def get_data_daily(symbol, outputsize, savingtoCsv=True):
     # with full all data until 2000 is shown, with compact the last 100 days
     from alpha_vantage.timeseries import TimeSeries
     # time for collecting data
+    # selecting api key
     API_KEY, waiting_times = api_key_finder()
+    # creating nessary object
     ts = TimeSeries(key=API_KEY, output_format='pandas')
+    # reading data into daily
     data, meta_data = ts.get_daily(symbol=symbol, outputsize=outputsize)
     # writing data to database and csv
     wrtite_to_database(data, 'Daily', symbol, 'daily', savingtoCsv)
