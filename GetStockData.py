@@ -71,31 +71,19 @@ def api_key_finder():
     return selected_api_key, str(resolution_data)
 
 
-def get_data_intraday(symbol, interval, outputsize, savingtoCsv=False):
-    # gets data over a period of a day
-    # loading necessary modules
-    from alpha_vantage.timeseries import TimeSeries
-    from time import gmtime, strftime
-    import sqlite3
+def wrtite_to_database(data, name, symbol, interval, savingtoCsv=False):
+    # this function will write the stock data into the database
+    # loading the needed modules
     import os
-    # getting the right api key
-    API_KEY, waiting_times = api_key_finder()
-    # setting the reading data
-    ts = TimeSeries(key=API_KEY, output_format='pandas', indexing_type='integer')
-    # reading the right time
-    time = strftime("%Y-%m-%d-%A", gmtime())
-    # getting the final data
-    data, meta_data = ts.get_intraday(symbol=symbol, interval=interval, outputsize=outputsize)
+    import sqlite3
+    import pandas as pd
+    # dataframe with stock data prepared, renamed index column to date
     data.rename(columns={'index': 'date'}, inplace=True)
-    # check if need to save to CSV-File
-    if savingtoCsv:
-        # saved data csv-file data
-        data.to_csv(
-            '/home/niklas/Desktop/TradingBot/StockData/' + 'StockData-' + symbol + '-' + interval + '-' + time + '.csv',
-            sep=';')
+    # renamed data index
+    data.index.name = ' '
     # time for loading the database
     file = '/home/niklas/Desktop/TradingBot/StockData/StockData-{}.db'.format(symbol)
-    tablename = 'IntraDay' + symbol + interval
+    tablename = name + symbol + interval
     if not os.path.isfile(file):
         conn = sqlite3.connect(file)
         c = conn.cursor()
@@ -118,29 +106,43 @@ def get_data_intraday(symbol, interval, outputsize, savingtoCsv=False):
         c.execute(
             'CREATE TABLE {} (date1 TEXT, open2 REAL, high3 REAL, low4 REAL, close5 REAL, volume REAL)'.format(
                 tablename))
-
-    # -----------------------------------------------------------------------------------------------------------------
-    # Working on
-    # -----------------------------------------------------------------------------------------------------------------
-    data.index.name = ' '
-    # print(data.tail())
-    import pandas as pd
+    # read data which is already in database
     df = pd.read_sql_query("SELECT * FROM {}".format(tablename), conn)  # , index_col='date')
-    print(df.head())
+    # dataframes joined after each other
     new_df = pd.concat([data, df], ignore_index=True)
-    # print(new_df.tail())
+    # duplicates are removed
     new_df.drop_duplicates(subset='date', keep='last', inplace=True, ignore_index=True)
+    # sorting dataframe by values
     new_df.sort_values('date', inplace=True, ascending=False)
-    new_df.to_csv('/home/niklas/Desktop/TradingBot/StockData/test.csv')
-
-    # print(new_df.head())
-    # print(new_df.tail())
+    # check if need to save to CSV-File
+    if savingtoCsv:
+        # saved data csv-file data
+        new_df.to_csv(
+            '/home/niklas/Desktop/TradingBot/StockData/' + 'StockData-' + symbol + '-' + interval + '.csv',
+            sep=';')
+    # write data to database
     new_df.to_sql(tablename, conn, if_exists='replace', index=False)
     conn.commit()
     conn.close()
-    # -----------------------------------------------------------------------------------------------------------------
-    # End
-    # -----------------------------------------------------------------------------------------------------------------
+
+
+def get_data_intraday(symbol, interval, outputsize, savingtoCsv=False):
+    # gets data over a period of a day
+    # loading necessary modules
+    from alpha_vantage.timeseries import TimeSeries
+    from time import gmtime, strftime
+    import sqlite3
+    import os
+    # getting the right api key
+    API_KEY, waiting_times = api_key_finder()
+    # setting the reading data
+    ts = TimeSeries(key=API_KEY, output_format='pandas', indexing_type='integer')
+    # reading the right time
+    time = strftime("%Y-%m-%d-%A", gmtime())
+    # getting the final data
+    data, meta_data = ts.get_intraday(symbol=symbol, interval=interval, outputsize=outputsize)
+    # writing data to database and csv
+    wrtite_to_database(data, 'IntraDay', symbol, interval, savingtoCsv)
 
     return data, meta_data  # , waiting_times
 
