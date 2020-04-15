@@ -176,7 +176,7 @@ def get_data_intraday(symbol, interval, outputsize, savingtoCsv=False):
     new_df = pd.concat([data,df], ignore_index=True)
     #print(new_df.tail())
     new_df.drop_duplicates(subset='date', keep='last', inplace=True, ignore_index=True)
-    new_df.sort_values('date' ,inplace=True)
+    new_df.sort_values('date' ,inplace=True, ascending=False)
     new_df.to_csv('/home/niklas/Desktop/TradingBot/StockData/test.csv')
 
     #print(new_df.head())
