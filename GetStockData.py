@@ -71,7 +71,7 @@ def api_key_finder():
     return selected_api_key, str(resolution_data)
 
 
-def wrtite_to_database(data, name, symbol, interval, savingtoCsv=False):
+def write_to_database(data, name, symbol, interval, savingtoCsv=False):
     # this function will write the stock data into the database
     # loading the needed modules
     import os
@@ -137,7 +137,7 @@ def get_data_intraday(symbol, interval, outputsize, savingtoCsv=False):
     # getting the final data
     data, meta_data = ts.get_intraday(symbol=symbol, interval=interval, outputsize=outputsize)
     # writing data to database and csv
-    wrtite_to_database(data, 'IntraDay', symbol, interval, savingtoCsv)
+    write_to_database(data, 'IntraDay', symbol, interval, savingtoCsv)
 
     return data, meta_data  # , waiting_times
 
@@ -154,7 +154,7 @@ def get_data_daily(symbol, outputsize, savingtoCsv=True):
     # reading data into daily
     data, meta_data = ts.get_daily(symbol=symbol, outputsize=outputsize)
     # writing data to database and csv
-    wrtite_to_database(data, 'Daily', symbol, 'daily', savingtoCsv)
+    write_to_database(data, 'Daily', symbol, 'daily', savingtoCsv)
     return data, meta_data  # , waiting_times
 
 
@@ -169,7 +169,7 @@ def get_data_weekly(symbol, savingtoCsv=True):
     # reading data into pandas
     data, meta_data = ts.get_weekly(symbol=symbol)
     # writing data to database and csv
-    wrtite_to_database(data, 'Weekly', symbol, 'weekly', savingtoCsv)
+    write_to_database(data, 'Weekly', symbol, 'weekly', savingtoCsv)
     return data, meta_data, waiting_times
 
 
@@ -191,7 +191,7 @@ def get_data_monthly(symbol, savingtoCsv=True):
     return data, meta_data, waiting_times
 
 
-def get_data_latest(symbol, savingtoCsv=False):
+def get_data_latest(symbol, savingtoCsv=True):
     # reads the latest data of the API
     # get changes of the last day
     from alpha_vantage.timeseries import TimeSeries
