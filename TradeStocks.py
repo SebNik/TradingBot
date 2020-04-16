@@ -16,13 +16,14 @@ class Stock:
         # loading the needed modules
         import os
         import sqlite3
-        import datetime
         import pandas as pd
+        from datetime import datetime
         # checking for database
         # creating path
         file = '/home/niklas/Desktop/TradingBot/Transactions/Transactions-{}.db'.format(self.symbol)
         # getting current time
-        timestamp = datetime.strftime("%d-%b-%Y (%H:%M:%S.%f)")
+        now = datetime.now()
+        timestamp = datetime.timestamp(now)
         # checking if already exists
         if not os.path.isfile(file):
             # creating file and table
@@ -50,6 +51,8 @@ class Stock:
                     'price-total REAL, profit REAL, fee REAL, account REAL)'.format(self.tablename))
             # read data which is already in database
             df = pd.read_sql_query("SELECT * FROM {}".format(self.tablename), conn)
+            # creating row
+            row = []
             # new row added to new dataframe
             new_df = pd.concat([df, row], ignore_index=True)
             # check if need to save to CSV-File
