@@ -1,5 +1,7 @@
 # this code is reading the stock data
 # all data is from GMT-5 -> Time Germany -6
+
+
 def api_key_finder():
     # selects the right api key for maximal success
     from time import gmtime, strftime
@@ -108,12 +110,15 @@ def write_to_database(data, name, symbol, interval, savingtoCsv=False):
                 tablename))
     # read data which is already in database
     df = pd.read_sql_query("SELECT * FROM {}".format(tablename), conn)  # , index_col='date')
+    print(df.head())
     # dataframes joined after each other
     new_df = pd.concat([data, df], ignore_index=True)
+    print(new_df.head())
     # duplicates are removed
     new_df.drop_duplicates(subset='date', keep='last', inplace=True, ignore_index=True)
     # sorting dataframe by values
     new_df.sort_values('date', inplace=True, ascending=False)
+    print(new_df.head())
     # check if need to save to CSV-File
     if savingtoCsv:
         # saved data csv-file data
@@ -200,5 +205,5 @@ def get_data_latest(symbol, savingtoCsv=True):
 
 if __name__ == "__main__":
     data, meta_data = get_data_intraday('AAPL', '5min', 'compact', True)
-    # print(data.head())
-    # print(meta_data)
+    #print(data.head())
+    #print(meta_data)
