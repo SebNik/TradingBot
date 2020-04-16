@@ -6,11 +6,12 @@ class Simulation:
     def __init__(self, symbol, interval='daily'):
         import GetStockData
         if interval == 'daily':
-            d,m=GetStockData.get_data_intraday(symbol,  '1min', 'compact',savingtoCsv=True)
+            d, m = GetStockData.get_data_intraday(symbol, '1min', 'compact', savingtoCsv=True)
         if interval == 'monthly':
             None
         if interval == 'intrday':
             None
+
 
 if __name__ == "__main__":
     sim = Simulation('IBM')
