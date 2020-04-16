@@ -28,7 +28,11 @@ class Stock:
 
     def buy(self,units_to_buy):
         latest=self.read_stock_price()
-        print(latest['05. price'])
+        last_price=latest[0]['05. price'][0]
+        self.units+=units_to_buy
+        self.account-=units_to_buy*float(last_price)
+        self.log_to_database()
+
 
 
     def sell(self, units_to_sell):
@@ -38,7 +42,6 @@ class Stock:
 if __name__ == "__main__":
     ibm = Stock('IBM')
     print(ibm.account)
-    ibm.change(500)
+    ibm.buy(4)
     print(ibm.account)
-    print(ibm.buy(4))
 
