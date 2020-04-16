@@ -30,11 +30,14 @@ class Stock:
                     # table found
                     # read data which is already in database
                     df = pd.read_sql_query("SELECT * FROM {}".format(self.table_name), conn)
-                    # calculating profit
-                    float(df.tail(1)['account'])
+                    # setting vars
                     self.account = float(df.tail(1)['account'])
                     self.broker_fee = float(df.tail(1)['fee'])
                     self.units = int(df.tail(1)['units'])
+            else:
+                self.account = start_acc
+                self.broker_fee = fee
+                self.units = 0
         else:
             self.account = start_acc
             self.broker_fee = fee
@@ -130,22 +133,41 @@ class Stock:
         self.account += value
         self._log_to_database('CHANGE')
 
-    def buy(self, units_to_buy):
+    def buy(self, units_to_buy, price=0):
         # buying stocks
-        latest = self.read_stock_price()
-        last_price = latest[0]['05. price'][0]
-        self.units += units_to_buy
-        self.account -= units_to_buy * (float(last_price) + units_to_buy * self.broker_fee)
-        self._log_to_database('BUY', last_price=last_price, units=units_to_buy, savingtoCsv=True)
-
-    def sell(self, units_to_sell):
-        # selling stocks
-        if self.units >= units_to_sell:
+        # check for simulation
+        if price==0:
+            # no simulation uses real
             latest = self.read_stock_price()
             last_price = latest[0]['05. price'][0]
+            # use normal state
+            state = 'BUY'
+        else:
+            # simulation use given price
+            last_price=price
+            # set different state
+            state='S-BUY'
+        self.units += units_to_buy
+        self.account -= units_to_buy * (float(last_price) + units_to_buy * self.broker_fee)
+        self._log_to_database(state, last_price=last_price, units=units_to_buy, savingtoCsv=True)
+
+    def sell(self, units_to_sell, price=0):
+        # selling stocks
+        if self.units >= units_to_sell:
+            if price == 0:
+                # no simulation uses real
+                latest = self.read_stock_price()
+                last_price = latest[0]['05. price'][0]
+                # use normal state
+                state = 'SELL'
+            else:
+                # simulation use given price
+                last_price = price
+                # set different state
+                state = 'S-SELL'
             self.units -= units_to_sell
             self.account += units_to_sell * (float(last_price) - units_to_sell * self.broker_fee)
-            self._log_to_database('SELL', last_price=last_price, units=units_to_sell, savingtoCsv=True)
+            self._log_to_database(state, last_price=last_price, units=units_to_sell, savingtoCsv=True)
 
     def get_last_log(self, lines=1):
         # loading the needed modules
@@ -172,7 +194,7 @@ class Stock:
 
 if __name__ == "__main__":
     ibm = Stock('IBM',check_if_exists=True)
-    ibm.buy(4)
+    ibm.buy(4,price=100)
     print(ibm.get_last_log())
-    ibm.sell(1)
+    ibm.sell(1,price=100000)
     print(ibm.get_last_log())
