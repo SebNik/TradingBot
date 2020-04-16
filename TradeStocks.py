@@ -16,10 +16,13 @@ class Stock:
         # loading the needed modules
         import os
         import sqlite3
+        import datetime
         import pandas as pd
         # checking for database
         # creating path
         file = '/home/niklas/Desktop/TradingBot/Transactions/Transactions-{}.db'.format(self.symbol)
+        # getting current time
+        timestamp = datetime.strftime("%d-%b-%Y (%H:%M:%S.%f)")
         # checking if already exists
         if not os.path.isfile(file):
             # creating file and table
