@@ -3,13 +3,42 @@
 
 
 class Stock:
-    def __init__(self, symbol, start_acc=1000, fee=0.01):
+    def __init__(self, symbol, start_acc=1000, fee=0.01, check_if_exists=False):
         # this function is the init
         self.symbol = symbol
-        self.account = start_acc
         self.table_name = symbol.upper() + '_Account'
-        self.broker_fee = fee
-        self.units = 0
+        # checking if possible to read from older version
+        if check_if_exists:
+            # this function will check if there is old data that can be used
+            # loading the needed modules
+            import os
+            import sqlite3
+            import pandas as pd
+            # creating path
+            file = '/home/niklas/Desktop/TradingBot/Transactions/Transactions-{}.db'.format(self.symbol)
+            # checking if database already exists
+            if os.path.isfile(file):
+                # already existing, establishing connection
+                conn = sqlite3.connect(file)
+                c = conn.cursor()
+                # now the database is connected through
+                # next we are going to check if the table already exists
+                table_check = "SELECT name FROM sqlite_master WHERE type='table' AND name='{}';".format(self.table_name)
+                c.execute(table_check)
+                result = c.fetchone()
+                if result:
+                    # table found
+                    # read data which is already in database
+                    df = pd.read_sql_query("SELECT * FROM {}".format(self.table_name), conn)
+                    # calculating profit
+                    float(df.tail(1)['account'])
+                    self.account = float(df.tail(1)['account'])
+                    self.broker_fee = float(df.tail(1)['fee'])
+                    self.units = int(df.tail(1)['units'])
+        else:
+            self.account = start_acc
+            self.broker_fee = fee
+            self.units = 0
 
     def _log_to_database(self, action, last_price=0, units=0, savingtoCsv=False):
         # this function will write the log for transactions
@@ -102,15 +131,21 @@ class Stock:
         self._log_to_database('CHANGE')
 
     def buy(self, units_to_buy):
-        # buying stock price
+        # buying stocks
         latest = self.read_stock_price()
         last_price = latest[0]['05. price'][0]
         self.units += units_to_buy
-        self.account -= units_to_buy * float(last_price) + units_to_buy * self.broker_fee
+        self.account -= units_to_buy * (float(last_price) + units_to_buy * self.broker_fee)
         self._log_to_database('BUY', last_price=last_price, units=units_to_buy, savingtoCsv=True)
 
     def sell(self, units_to_sell):
-        None
+        # selling stocks
+        if self.units >= units_to_sell:
+            latest = self.read_stock_price()
+            last_price = latest[0]['05. price'][0]
+            self.units -= units_to_sell
+            self.account += units_to_sell * (float(last_price) - units_to_sell * self.broker_fee)
+            self._log_to_database('SELL', last_price=last_price, units=units_to_sell, savingtoCsv=True)
 
     def get_last_log(self, lines=1):
         # loading the needed modules
@@ -136,8 +171,8 @@ class Stock:
 
 
 if __name__ == "__main__":
-    ibm = Stock('IBM')
+    ibm = Stock('IBM',check_if_exists=True)
     ibm.buy(4)
     print(ibm.get_last_log())
-    ibm.change(500)
+    ibm.sell(1)
     print(ibm.get_last_log())
