@@ -79,19 +79,15 @@ def write_to_database(data, name, symbol, interval, savingtoCsv=False):
     import os
     import sqlite3
     import pandas as pd
-    # dataframe with stock data prepared, renamed index column to date
-    data.rename(columns={'index': 'date'}, inplace=True)
-    # renamed data index
-    data.index.name = ' '
     # time for loading the database
     file = '/home/niklas/Desktop/TradingBot/StockData/StockData-{}.db'.format(symbol)
     tablename = name + symbol + interval
     if not os.path.isfile(file):
         conn = sqlite3.connect(file)
         c = conn.cursor()
-        c.execute(
-            'CREATE TABLE {} (date1 TEXT, open2 REAL, high3 REAL, low4 REAL, close5 REAL, volume REAL)'.format(
-                tablename))
+        #c.execute(
+        #    'CREATE TABLE {} (date1 TEXT, open2 REAL, high3 REAL, low4 REAL, close5 REAL, volume REAL)'.format(
+        #        tablename))
     else:
         conn = sqlite3.connect(file)
         c = conn.cursor()
@@ -102,23 +98,22 @@ def write_to_database(data, name, symbol, interval, savingtoCsv=False):
     result = c.fetchone()
     if result:
         # table found
-        None
+        # renamed data index
+        data.index.name = ' '
+        # read data which is already in database
+        df = pd.read_sql_query("SELECT * FROM {}".format(tablename), conn)  # , index_col='date')
+        # print(df.head())
+        # dataframes joined after each other
+        new_df = pd.concat([data, df], ignore_index=True)
+        print(new_df.head())
+        # duplicates are removed
+        new_df.drop_duplicates(subset='date', keep='last', inplace=True, ignore_index=True)
+        # sorting dataframe by values
+        new_df.sort_values('date', inplace=True, ascending=False)
+        # print(new_df.head())
     else:
         # table not found
-        c.execute(
-            'CREATE TABLE {} (date1 TEXT, open2 REAL, high3 REAL, low4 REAL, close5 REAL, volume REAL)'.format(
-                tablename))
-    # read data which is already in database
-    df = pd.read_sql_query("SELECT * FROM {}".format(tablename), conn)  # , index_col='date')
-    print(df.head())
-    # dataframes joined after each other
-    new_df = pd.concat([data, df], ignore_index=True)
-    print(new_df.head())
-    # duplicates are removed
-    new_df.drop_duplicates(subset='date', keep='last', inplace=True, ignore_index=True)
-    # sorting dataframe by values
-    new_df.sort_values('date', inplace=True, ascending=False)
-    print(new_df.head())
+        new_df=data
     # check if need to save to CSV-File
     if savingtoCsv:
         # saved data csv-file data
