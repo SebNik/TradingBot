@@ -182,7 +182,7 @@ def get_data_monthly(symbol, savingtoCsv=True):
     data, meta_data = ts.get_monthly(symbol=symbol)
     # writing data to database and csv
     write_to_database(data, 'Monthly', symbol, 'monthly', savingtoCsv)
-    return data, meta_data  # , waiting_times
+    return data, meta_data
 
 
 def get_data_latest(symbol, savingtoCsv=True):
