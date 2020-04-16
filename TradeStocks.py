@@ -112,9 +112,8 @@ class Stock:
     def sell(self, units_to_sell):
         None
 
-    @classmethod
-    def classmethod(cls):
-        return 'class method called', cls
+
+
 
     def __repr__(self):
         return self
@@ -126,7 +125,5 @@ class Stock:
 
 if __name__ == "__main__":
     ibm = Stock('IBM')
-    print(ibm.account)
     ibm.buy(4)
-    print(ibm.account)
     print(ibm)
