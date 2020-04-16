@@ -11,7 +11,7 @@ class Stock:
         self.broker_fee = fee
         self.units = 0
 
-    def log_to_database(self, savingtoCsv=False):
+    def log_to_database(self, action, last_price=0, units=0, savingtoCsv=False):
         # this function will write the log for transactions
         # loading the needed modules
         import os
@@ -51,8 +51,27 @@ class Stock:
                     'price_total REAL, profit REAL, fee REAL, account REAL)'.format(self.table_name))
             # read data which is already in database
             df = pd.read_sql_query("SELECT * FROM {}".format(self.table_name), conn)
-            # creating row
-            row = []
+            # calculating profit
+            if action=='BUY':
+                profit = (self.account + float(units*last_price))*100/self.account
+            elif action=='SELL':
+                profit = (self.account - float(units * last_price)) * 100 / self.account
+            else:
+                profit=0
+            # creating row with data
+            # starting with dictionary
+            row_dict = {
+                'Time': timestamp,
+                'ID_Function': action,
+                'ID' : df.count,
+                'symbol': self.symbol,
+                'price_each': last_price,
+                'units': units,
+                'price_total': float(units*last_price),
+                'profit': profit,
+                'fee' : self.broker_fee,
+                'account': self.account
+            }
             # new row added to new dataframe
             new_df = pd.concat([df, row], ignore_index=True)
             # check if need to save to CSV-File
