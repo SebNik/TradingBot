@@ -10,28 +10,30 @@ class Stock:
         self.broker_fee = fee
         self.units = 0
 
-    def log_to_database(self):
+    def log_to_database(self, savingtoCsv=False):
         # this function will write the log for transactions
         # loading the needed modules
         import os
         import sqlite3
         import pandas as pd
         # checking for database
-        # time for loading the database
-        file = '/home/niklas/Desktop/TradingBot/StockData/StockData-{}.db'.format(symbol)
-        tablename = name + symbol + interval
+        # creating path
+        file = '/home/niklas/Desktop/TradingBot/Transactions/Transactions-{}.db'.format(self.symbol)
+        # checking if already exists
         if not os.path.isfile(file):
+            # creating file and table
             conn = sqlite3.connect(file)
             c = conn.cursor()
             c.execute(
                 'CREATE TABLE {} (date1 TEXT, open2 REAL, high3 REAL, low4 REAL, close5 REAL, volume REAL)'.format(
-                    tablename))
+                    self.table_name))
         else:
+            # already existing, establishing connection
             conn = sqlite3.connect(file)
             c = conn.cursor()
             # now the database is connected through
             # next we are going to check if the table already exists
-            table_check = "SELECT name FROM sqlite_master WHERE type='table' AND name='{}';".format(tablename)
+            table_check = "SELECT name FROM sqlite_master WHERE type='table' AND name='{}';".format(self.tablename)
             c.execute(table_check)
             result = c.fetchone()
             if result:
@@ -41,23 +43,17 @@ class Stock:
                 # table not found
                 c.execute(
                     'CREATE TABLE {} (date1 TEXT, open2 REAL, high3 REAL, low4 REAL, close5 REAL, volume REAL)'.format(
-                        tablename))
+                        self.tablename))
             # read data which is already in database
-            df = pd.read_sql_query("SELECT * FROM {}".format(tablename), conn)  # , index_col='date')
-            # dataframes joined after each other
-            new_df = pd.concat([data, df], ignore_index=True)
-            # duplicates are removed
-            new_df.drop_duplicates(subset='date', keep='last', inplace=True, ignore_index=True)
-            # sorting dataframe by values
-            new_df.sort_values('date', inplace=True, ascending=False)
+            df = pd.read_sql_query("SELECT * FROM {}".format(self.tablename), conn)
+            # new row added to new dataframe
+            new_df = pd.concat([df, row], ignore_index=True)
             # check if need to save to CSV-File
             if savingtoCsv:
                 # saved data csv-file data
-                new_df.to_csv(
-                    '/home/niklas/Desktop/TradingBot/StockData/' + 'StockData-' + symbol + '-' + interval + '.csv',
-                    sep=';')
+                new_df.to_csv('/home/niklas/Desktop/TradingBot/Transactions/Transactions-{}.csv'.format(self.symbol),sep=';')
             # write data to database
-            new_df.to_sql(tablename, conn, if_exists='replace', index=False)
+            new_df.to_sql(self.tablename, conn, if_exists='replace', index=False)
             conn.commit()
             conn.close()
 
