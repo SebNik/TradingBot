@@ -7,7 +7,7 @@ class Stock:
         # this function is the init
         self.symbol = symbol
         self.account = start_acc
-        self.table_name = symbol.upper() + '-Account'
+        self.table_name = symbol.upper() + '_Account'
         self.broker_fee = fee
         self.units = 0
 
@@ -30,15 +30,15 @@ class Stock:
             conn = sqlite3.connect(file)
             c = conn.cursor()
             c.execute(
-                'CREATE TABLE {} (Time TEXT, ID-Function TEXT, ID TEXT, symbol TEXT, price-each REAL, units REAL, '
-                'price-total REAL, profit REAL, fee REAL, account REAL)'.format(self.table_name))
+                'CREATE TABLE {} (Time TEXT, ID_Function TEXT, ID TEXT, symbol TEXT, price_each REAL, units REAL, '
+                'price_total REAL, profit REAL, fee REAL, account REAL)'.format(self.table_name))
         else:
             # already existing, establishing connection
             conn = sqlite3.connect(file)
             c = conn.cursor()
             # now the database is connected through
             # next we are going to check if the table already exists
-            table_check = "SELECT name FROM sqlite_master WHERE type='table' AND name='{}';".format(self.tablename)
+            table_check = "SELECT name FROM sqlite_master WHERE type='table' AND name='{}';".format(self.table_name)
             c.execute(table_check)
             result = c.fetchone()
             if result:
@@ -47,10 +47,10 @@ class Stock:
             else:
                 # table not found
                 c.execute(
-                    'CREATE TABLE {} (Time TEXT, ID-Function TEXT, ID TEXT, symbol TEXT, price-each REAL, units REAL, '
-                    'price-total REAL, profit REAL, fee REAL, account REAL)'.format(self.tablename))
+                    'CREATE TABLE {} (Time TEXT, ID_Function TEXT, ID TEXT, symbol TEXT, price_each REAL, units REAL, '
+                    'price_total REAL, profit REAL, fee REAL, account REAL)'.format(self.table_name))
             # read data which is already in database
-            df = pd.read_sql_query("SELECT * FROM {}".format(self.tablename), conn)
+            df = pd.read_sql_query("SELECT * FROM {}".format(self.table_name), conn)
             # creating row
             row = []
             # new row added to new dataframe
@@ -61,7 +61,7 @@ class Stock:
                 new_df.to_csv('/home/niklas/Desktop/TradingBot/Transactions/Transactions-{}.csv'.format(self.symbol),
                               sep=';')
             # write data to database
-            new_df.to_sql(self.tablename, conn, if_exists='replace', index=False)
+            new_df.to_sql(self.table_name, conn, if_exists='replace', index=False)
             # committing the saves
             conn.commit()
             # closing the connection
@@ -97,7 +97,8 @@ class Stock:
         return self
 
     def __str__(self):
-        return 'Symbol: ' + self.symbol + ' Balance: ' + str(self.account) + ' Units: ' + str(self.units)
+        return 'Symbol: ' + self.symbol + ' Balance: ' + str(self.account) + ' Units: ' + str(
+            self.units) + ' Tabel name: ' + self.table_name
 
 
 if __name__ == "__main__":
