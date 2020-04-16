@@ -4,6 +4,7 @@
 
 class Stock:
     def __init__(self, symbol, start_acc=1000, fee=0.01):
+        # this function is the init
         self.symbol = symbol
         self.account = start_acc
         self.table_name = symbol.upper() + '-Account'
@@ -54,19 +55,24 @@ class Stock:
                 new_df.to_csv('/home/niklas/Desktop/TradingBot/Transactions/Transactions-{}.csv'.format(self.symbol),sep=';')
             # write data to database
             new_df.to_sql(self.tablename, conn, if_exists='replace', index=False)
+            # committing the saves
             conn.commit()
+            # closing the connection
             conn.close()
 
     def read_stock_price(self):
+        # read the stock price latest
         import GetStockData
         data_latest = GetStockData.get_data_latest(self.symbol)
         return data_latest
 
     def change(self, value):
+        # manually recharging the account
         self.account += value
         self.log_to_database()
 
     def buy(self, units_to_buy):
+        # buying stock price
         latest = self.read_stock_price()
         last_price = latest[0]['05. price'][0]
         self.units += units_to_buy
