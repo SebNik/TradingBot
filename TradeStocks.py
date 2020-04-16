@@ -53,9 +53,9 @@ class Stock:
         df = pd.read_sql_query("SELECT * FROM {}".format(self.table_name), conn)
         # calculating profit
         if action == 'BUY':
-            profit = float(float(self.account) + float(units * float(last_price))) * 100 / float(self.account)
+            profit = -100 * float(self.account) / float(float(self.account) + float(units * float(last_price)))
         elif action == 'SELL':
-            profit = (self.account - float(units * float(last_price))) * 100 / self.account
+            profit = 100 * float(self.account) / float(float(self.account) + float(units * float(last_price)))
         else:
             profit = 0
         # counting rows
@@ -107,13 +107,12 @@ class Stock:
         last_price = latest[0]['05. price'][0]
         self.units += units_to_buy
         self.account -= units_to_buy * float(last_price) + units_to_buy * self.broker_fee
-        self._log_to_database('BUY',last_price=last_price, units=units_to_buy, savingtoCsv=True)
+        self._log_to_database('BUY', last_price=last_price, units=units_to_buy, savingtoCsv=True)
 
     def sell(self, units_to_sell):
         None
 
-
-    def get_last_log(self,lines=1):
+    def get_last_log(self, lines=1):
         # loading the needed modules
         import sqlite3
         import pandas as pd
@@ -127,7 +126,6 @@ class Stock:
         conn.close()
         # returning head(1)
         return df.tail(lines)
-
 
     def __repr__(self):
         return self
