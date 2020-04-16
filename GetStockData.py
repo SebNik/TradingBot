@@ -85,9 +85,6 @@ def write_to_database(data, name, symbol, interval, savingtoCsv=False):
     if not os.path.isfile(file):
         conn = sqlite3.connect(file)
         c = conn.cursor()
-        #c.execute(
-        #    'CREATE TABLE {} (date1 TEXT, open2 REAL, high3 REAL, low4 REAL, close5 REAL, volume REAL)'.format(
-        #        tablename))
     else:
         conn = sqlite3.connect(file)
         c = conn.cursor()
@@ -96,16 +93,16 @@ def write_to_database(data, name, symbol, interval, savingtoCsv=False):
     table_check = "SELECT name FROM sqlite_master WHERE type='table' AND name='{}';".format(tablename)
     c.execute(table_check)
     result = c.fetchone()
+    # renamed data index
+    data.rename(columns={'index': 'date'}, inplace=True)
+    data.index.name = ' '
     if result:
         # table found
-        # renamed data index
-        data.index.name = ' '
         # read data which is already in database
         df = pd.read_sql_query("SELECT * FROM {}".format(tablename), conn)  # , index_col='date')
         # print(df.head())
         # dataframes joined after each other
         new_df = pd.concat([data, df], ignore_index=True)
-        print(new_df.head())
         # duplicates are removed
         new_df.drop_duplicates(subset='date', keep='last', inplace=True, ignore_index=True)
         # sorting dataframe by values
@@ -139,7 +136,7 @@ def get_data_intraday(symbol, interval, outputsize, savingtoCsv=False):
     # writing data to database and csv
     write_to_database(data, 'IntraDay', symbol, interval, savingtoCsv)
 
-    return data, meta_data  # , waiting_times
+    return data, meta_data
 
 
 def get_data_daily(symbol, outputsize, savingtoCsv=True):
@@ -150,12 +147,12 @@ def get_data_daily(symbol, outputsize, savingtoCsv=True):
     # selecting api key
     API_KEY, waiting_times = api_key_finder()
     # creating nessary object
-    ts = TimeSeries(key=API_KEY, output_format='pandas')
+    ts = TimeSeries(key=API_KEY, output_format='pandas', indexing_type='integer')
     # reading data into daily
     data, meta_data = ts.get_daily(symbol=symbol, outputsize=outputsize)
     # writing data to database and csv
     write_to_database(data, 'Daily', symbol, 'daily', savingtoCsv)
-    return data, meta_data  # , waiting_times
+    return data, meta_data
 
 
 def get_data_weekly(symbol, savingtoCsv=True):
@@ -165,12 +162,12 @@ def get_data_weekly(symbol, savingtoCsv=True):
     # getting api key
     API_KEY, waiting_times = api_key_finder()
     # creating necessary object
-    ts = TimeSeries(key=API_KEY, output_format='pandas')
+    ts = TimeSeries(key=API_KEY, output_format='pandas', indexing_type='integer')
     # reading data into pandas
     data, meta_data = ts.get_weekly(symbol=symbol)
     # writing data to database and csv
     write_to_database(data, 'Weekly', symbol, 'weekly', savingtoCsv)
-    return data, meta_data, waiting_times
+    return data, meta_data
 
 
 def get_data_monthly(symbol, savingtoCsv=True):
@@ -185,7 +182,7 @@ def get_data_monthly(symbol, savingtoCsv=True):
     data, meta_data = ts.get_monthly(symbol=symbol)
     # writing data to database and csv
     write_to_database(data, 'Monthly', symbol, 'monthly', savingtoCsv)
-    return data, meta_data, waiting_times
+    return data, meta_data#, waiting_times
 
 
 def get_data_latest(symbol, savingtoCsv=True):
@@ -200,5 +197,6 @@ def get_data_latest(symbol, savingtoCsv=True):
 
 if __name__ == "__main__":
     data, meta_data = get_data_intraday('AAPL', '5min', 'compact', True)
+    d,m=get_data_weekly('IBM')
     #print(data.head())
     #print(meta_data)
