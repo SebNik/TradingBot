@@ -113,6 +113,20 @@ class Stock:
         None
 
 
+    def get_last_log(self,lines=1):
+        # loading the needed modules
+        import sqlite3
+        import pandas as pd
+        # setting file path
+        file = '/home/niklas/Desktop/TradingBot/Transactions/Transactions-{}.db'.format(self.symbol)
+        # establishing connection to database
+        conn = sqlite3.connect(file)
+        # read data which is already in database
+        df = pd.read_sql_query("SELECT * FROM {}".format(self.table_name), conn)
+        # closing connection
+        conn.close()
+        # returning head(1)
+        return df.head(lines)
 
 
     def __repr__(self):
@@ -126,4 +140,4 @@ class Stock:
 if __name__ == "__main__":
     ibm = Stock('IBM')
     ibm.buy(4)
-    print(ibm)
+    print(ibm.get_last_log())
