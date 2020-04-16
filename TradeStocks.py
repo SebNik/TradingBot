@@ -52,28 +52,32 @@ class Stock:
             # read data which is already in database
             df = pd.read_sql_query("SELECT * FROM {}".format(self.table_name), conn)
             # calculating profit
-            if action=='BUY':
-                profit = (self.account + float(units*last_price))*100/self.account
-            elif action=='SELL':
-                profit = (self.account - float(units * last_price)) * 100 / self.account
+            if action == 'BUY':
+                profit = float(float(self.account) + float(units * float(last_price))) * 100 / float(self.account)
+            elif action == 'SELL':
+                profit = (self.account - float(units * float(last_price))) * 100 / self.account
             else:
-                profit=0
+                profit = 0
+            # counting rows
+            index = df.index
+            count = len(index)
             # creating row with data
             # starting with dictionary
             row_dict = {
-                'Time': timestamp,
-                'ID_Function': action,
-                'ID' : df.count,
-                'symbol': self.symbol,
-                'price_each': last_price,
-                'units': units,
-                'price_total': float(units*last_price),
-                'profit': profit,
-                'fee' : self.broker_fee,
-                'account': self.account
+                'Time': [timestamp],
+                'ID_Function': [action],
+                'ID': [count],
+                'symbol': [self.symbol],
+                'price_each': [last_price],
+                'units': [units],
+                'price_total': [float(units * float(last_price))],
+                'profit': [profit],
+                'fee': [self.broker_fee],
+                'account': [self.account]
             }
+            df_row = pd.DataFrame(row_dict)
             # new row added to new dataframe
-            new_df = pd.concat([df, row], ignore_index=True)
+            new_df = pd.concat([df, df_row], ignore_index=True)
             # check if need to save to CSV-File
             if savingtoCsv:
                 # saved data csv-file data
@@ -103,7 +107,7 @@ class Stock:
         last_price = latest[0]['05. price'][0]
         self.units += units_to_buy
         self.account -= units_to_buy * float(last_price) + units_to_buy * self.broker_fee
-        self.log_to_database()
+        self.log_to_database('BUY',last_price=last_price, units=units_to_buy, savingtoCsv=True)
 
     def sell(self, units_to_sell):
         None
