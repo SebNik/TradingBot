@@ -110,7 +110,7 @@ def write_to_database(data, name, symbol, interval, savingtoCsv=False):
         # print(new_df.head())
     else:
         # table not found
-        new_df=data
+        new_df = data
     # check if need to save to CSV-File
     if savingtoCsv:
         # saved data csv-file data
@@ -182,7 +182,7 @@ def get_data_monthly(symbol, savingtoCsv=True):
     data, meta_data = ts.get_monthly(symbol=symbol)
     # writing data to database and csv
     write_to_database(data, 'Monthly', symbol, 'monthly', savingtoCsv)
-    return data, meta_data#, waiting_times
+    return data, meta_data  # , waiting_times
 
 
 def get_data_latest(symbol, savingtoCsv=True):
@@ -192,11 +192,11 @@ def get_data_latest(symbol, savingtoCsv=True):
     API_KEY, waiting_times = api_key_finder()
     ts = TimeSeries(key=API_KEY, output_format='pandas')
     data = ts.get_quote_endpoint(symbol=symbol)
-    return data # , waiting_times
+    return data  # , waiting_times
 
 
 if __name__ == "__main__":
     data, meta_data = get_data_intraday('AAPL', '5min', 'compact', True)
-    d,m=get_data_weekly('IBM')
-    #print(data.head())
-    #print(meta_data)
+    d, m = get_data_weekly('IBM')
+    # print(data.head())
+    # print(meta_data)
