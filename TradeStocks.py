@@ -11,7 +11,7 @@ class Stock:
         self.broker_fee = fee
         self.units = 0
 
-    def log_to_database(self, action, last_price=0, units=0, savingtoCsv=False):
+    def _log_to_database(self, action, last_price=0, units=0, savingtoCsv=False):
         # this function will write the log for transactions
         # loading the needed modules
         import os
@@ -49,46 +49,46 @@ class Stock:
                 c.execute(
                     'CREATE TABLE {} (Time TEXT, ID_Function TEXT, ID TEXT, symbol TEXT, price_each REAL, units REAL, '
                     'price_total REAL, profit REAL, fee REAL, account REAL)'.format(self.table_name))
-            # read data which is already in database
-            df = pd.read_sql_query("SELECT * FROM {}".format(self.table_name), conn)
-            # calculating profit
-            if action == 'BUY':
-                profit = float(float(self.account) + float(units * float(last_price))) * 100 / float(self.account)
-            elif action == 'SELL':
-                profit = (self.account - float(units * float(last_price))) * 100 / self.account
-            else:
-                profit = 0
-            # counting rows
-            index = df.index
-            count = len(index)
-            # creating row with data
-            # starting with dictionary
-            row_dict = {
-                'Time': [timestamp],
-                'ID_Function': [action],
-                'ID': [count],
-                'symbol': [self.symbol],
-                'price_each': [last_price],
-                'units': [units],
-                'price_total': [float(units * float(last_price))],
-                'profit': [profit],
-                'fee': [self.broker_fee],
-                'account': [self.account]
-            }
-            df_row = pd.DataFrame(row_dict)
-            # new row added to new dataframe
-            new_df = pd.concat([df, df_row], ignore_index=True)
-            # check if need to save to CSV-File
-            if savingtoCsv:
-                # saved data csv-file data
-                new_df.to_csv('/home/niklas/Desktop/TradingBot/Transactions/Transactions-{}.csv'.format(self.symbol),
-                              sep=';')
-            # write data to database
-            new_df.to_sql(self.table_name, conn, if_exists='replace', index=False)
-            # committing the saves
-            conn.commit()
-            # closing the connection
-            conn.close()
+        # read data which is already in database
+        df = pd.read_sql_query("SELECT * FROM {}".format(self.table_name), conn)
+        # calculating profit
+        if action == 'BUY':
+            profit = float(float(self.account) + float(units * float(last_price))) * 100 / float(self.account)
+        elif action == 'SELL':
+            profit = (self.account - float(units * float(last_price))) * 100 / self.account
+        else:
+            profit = 0
+        # counting rows
+        index = df.index
+        count = len(index)
+        # creating row with data
+        # starting with dictionary
+        row_dict = {
+            'Time': [timestamp],
+            'ID_Function': [action],
+            'ID': [count],
+            'symbol': [self.symbol],
+            'price_each': [last_price],
+            'units': [units],
+            'price_total': [float(units * float(last_price))],
+            'profit': [profit],
+            'fee': [self.broker_fee],
+            'account': [self.account]
+        }
+        df_row = pd.DataFrame(row_dict)
+        # new row added to new dataframe
+        new_df = pd.concat([df, df_row], ignore_index=True)
+        # check if need to save to CSV-File
+        if savingtoCsv:
+            # saved data csv-file data
+            new_df.to_csv('/home/niklas/Desktop/TradingBot/Transactions/Transactions-{}.csv'.format(self.symbol),
+                          sep=';')
+        # write data to database
+        new_df.to_sql(self.table_name, conn, if_exists='replace', index=False)
+        # committing the saves
+        conn.commit()
+        # closing the connection
+        conn.close()
 
     def read_stock_price(self):
         # read the stock price latest
@@ -99,7 +99,7 @@ class Stock:
     def change(self, value):
         # manually recharging the account
         self.account += value
-        self.log_to_database()
+        self._log_to_database('CHANGE')
 
     def buy(self, units_to_buy):
         # buying stock price
@@ -107,7 +107,7 @@ class Stock:
         last_price = latest[0]['05. price'][0]
         self.units += units_to_buy
         self.account -= units_to_buy * float(last_price) + units_to_buy * self.broker_fee
-        self.log_to_database('BUY',last_price=last_price, units=units_to_buy, savingtoCsv=True)
+        self._log_to_database('BUY',last_price=last_price, units=units_to_buy, savingtoCsv=True)
 
     def sell(self, units_to_sell):
         None
@@ -126,7 +126,7 @@ class Stock:
         # closing connection
         conn.close()
         # returning head(1)
-        return df.head(lines)
+        return df.tail(lines)
 
 
     def __repr__(self):
@@ -140,4 +140,6 @@ class Stock:
 if __name__ == "__main__":
     ibm = Stock('IBM')
     ibm.buy(4)
+    print(ibm.get_last_log())
+    ibm.change(500)
     print(ibm.get_last_log())
