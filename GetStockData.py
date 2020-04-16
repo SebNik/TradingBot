@@ -195,7 +195,7 @@ def get_data_latest(symbol, savingtoCsv=True):
     API_KEY, waiting_times = api_key_finder()
     ts = TimeSeries(key=API_KEY, output_format='pandas')
     data = ts.get_quote_endpoint(symbol=symbol)
-    return data[0], waiting_times
+    return data # , waiting_times
 
 
 if __name__ == "__main__":

@@ -16,7 +16,9 @@ class Stock:
 
 
     def read_stock_price(self):
-        None
+        import GetStockData
+        data_latest=GetStockData.get_data_latest(self.symbol)
+        return data_latest
 
 
     def change(self, value):
@@ -25,7 +27,8 @@ class Stock:
 
 
     def buy(self,units_to_buy):
-        None
+        latest=self.read_stock_price()
+        print(latest['05. price'])
 
 
     def sell(self, units_to_sell):
@@ -33,5 +36,9 @@ class Stock:
 
 
 if __name__ == "__main__":
-    None
+    ibm = Stock('IBM')
+    print(ibm.account)
+    ibm.change(500)
+    print(ibm.account)
+    print(ibm.buy(4))
 
