@@ -29,8 +29,8 @@ class Stock:
             conn = sqlite3.connect(file)
             c = conn.cursor()
             c.execute(
-                'CREATE TABLE {} (date1 TEXT, open2 REAL, high3 REAL, low4 REAL, close5 REAL, volume REAL)'.format(
-                    self.table_name))
+                'CREATE TABLE {} (Time TEXT, ID-Function TEXT, ID TEXT, symbol TEXT, price-each REAL, units REAL, '
+                'price-total REAL, profit REAL, fee REAL, account REAL)'.format(self.table_name))
         else:
             # already existing, establishing connection
             conn = sqlite3.connect(file)
@@ -46,8 +46,8 @@ class Stock:
             else:
                 # table not found
                 c.execute(
-                    'CREATE TABLE {} (date1 TEXT, open2 REAL, high3 REAL, low4 REAL, close5 REAL, volume REAL)'.format(
-                        self.tablename))
+                    'CREATE TABLE {} (Time TEXT, ID-Function TEXT, ID TEXT, symbol TEXT, price-each REAL, units REAL, '
+                    'price-total REAL, profit REAL, fee REAL, account REAL)'.format(self.tablename))
             # read data which is already in database
             df = pd.read_sql_query("SELECT * FROM {}".format(self.tablename), conn)
             # new row added to new dataframe
@@ -55,7 +55,8 @@ class Stock:
             # check if need to save to CSV-File
             if savingtoCsv:
                 # saved data csv-file data
-                new_df.to_csv('/home/niklas/Desktop/TradingBot/Transactions/Transactions-{}.csv'.format(self.symbol),sep=';')
+                new_df.to_csv('/home/niklas/Desktop/TradingBot/Transactions/Transactions-{}.csv'.format(self.symbol),
+                              sep=';')
             # write data to database
             new_df.to_sql(self.tablename, conn, if_exists='replace', index=False)
             # committing the saves
