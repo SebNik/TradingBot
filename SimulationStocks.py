@@ -7,15 +7,18 @@ class Simulation:
         # loading in modules
         import GetStockData
         # setting self.vars
-        self.symbol=symbol
-        self.interval=interval
+        self.symbol = symbol
+        self.interval = interval
         # starting checking for right playing option
         if self.interval == 'daily':
-            GetStockData.get_data_daily(self.symbol,False)
+            GetStockData.get_data_daily(self.symbol, False)
         if self.interval == 'monthly':
-            GetStockData.get_data_monthly(self.symbol,False)
+            GetStockData.get_data_monthly(self.symbol, False)
         if self.interval == 'intrday':
             GetStockData.get_data_intraday(symbol, '1min', 'full', savingtoCsv=False)
+
+    def __str__(self):
+        return 'Simulation: Symbol: ' + self.symbol + ' Interval: ' + self.interval
 
 
 if __name__ == "__main__":
