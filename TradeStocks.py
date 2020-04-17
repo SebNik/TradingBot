@@ -184,6 +184,20 @@ class Stock:
         # returning head(1)
         return df.tail(lines)
 
+    def get_max_possible_buy(self, price=0, fraction=1):
+        # this function will find out how many units can be bought
+        if price==0:
+            # no simulation uses real
+            latest = self.__read_stock_price()
+            price = latest[0]['05. price'][0]
+        units=1
+        while self.account/(units*price)>1:
+            units+=1
+        possible_buys=units*fraction
+        return possible_buys
+
+
+
     def __repr__(self):
         return self
 
@@ -196,5 +210,4 @@ if __name__ == "__main__":
     ibm = Stock('IBM',check_if_exists=True)
     ibm.buy(4,price=100)
     print(ibm.get_last_log())
-    ibm.sell(1,price=100000)
-    print(ibm.get_last_log())
+    print(ibm.get_max_possible_buy(price=100))
