@@ -85,9 +85,10 @@ class Stock:
         df = pd.read_sql_query("SELECT * FROM {}".format(self.table_name), conn)
         # calculating profit
         if 'BUY' in action:
-            profit = -100 * float(float(self.account) + float(units * float(last_price))) / float(self.account)
+            profit = -1 * float(units * float(last_price)) / float(
+                float(self.account) + float(units * float(last_price)))
         elif 'SELL' in action:
-            profit = 100 * float(float(self.account) + float(units * float(last_price))) / float(self.account)
+            profit = float(units * float(last_price)) / float(float(self.account) + float(units * float(last_price)))
         else:
             profit = 0
         # counting rows
@@ -134,7 +135,7 @@ class Stock:
         self._log_to_database('CHANGE')
 
     def buy(self, units_to_buy, price=0):
-        if units_to_buy>0:
+        if units_to_buy > 0:
             # buying stocks
             # check for simulation
             if price == 0:
@@ -153,7 +154,7 @@ class Stock:
             self._log_to_database(state, last_price=last_price, units=units_to_buy, savingtoCsv=True)
 
     def sell(self, units_to_sell, price=0):
-        if units_to_sell>0:
+        if units_to_sell > 0:
             # selling stocks
             if self.units >= units_to_sell:
                 if price == 0:
@@ -199,7 +200,7 @@ class Stock:
         while self.account / (units * price) > 1:
             units += 1
         # calculating with fraction
-        possible_buys = int((units-1) * fraction)
+        possible_buys = int((units - 1) * fraction)
         # retuning value
         return possible_buys
 
