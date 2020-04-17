@@ -33,7 +33,7 @@ class Model(Stock):
             # loading in simulation
             from SimulationStocks import Simulation
             # object sim is being created
-            sim = Simulation(self.symbol, interval=self.interval)
+            sim = Simulation(self.symbol, interval=self.interval, date_range=[[2004, 1, 1], [2004, 12, 31]])
             # data is loaded in for the for loop
             row, count, index = sim.get_price()
             # for loop with real stuff is starting
