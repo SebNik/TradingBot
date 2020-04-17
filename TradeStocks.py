@@ -136,7 +136,7 @@ class Stock:
     def buy(self, units_to_buy, price=0):
         # buying stocks
         # check for simulation
-        if price==0:
+        if price == 0:
             # no simulation uses real
             latest = self.__read_stock_price()
             last_price = latest[0]['05. price'][0]
@@ -144,9 +144,9 @@ class Stock:
             state = 'BUY'
         else:
             # simulation use given price
-            last_price=price
+            last_price = price
             # set different state
-            state='S-BUY'
+            state = 'S-BUY'
         self.units += units_to_buy
         self.account -= units_to_buy * (float(last_price) + units_to_buy * self.broker_fee)
         self._log_to_database(state, last_price=last_price, units=units_to_buy, savingtoCsv=True)
@@ -186,18 +186,18 @@ class Stock:
 
     def get_possible_buy(self, price=0, fraction=1):
         # this function will find out how many units can be bought
-        if price==0:
+        if price == 0:
             # no simulation uses real
             latest = self.__read_stock_price()
             # reading price from dantaframe
             price = latest[0]['05. price'][0]
         # setting starting point
-        units=1
+        units = 1
         # iterating and checking how much possible
-        while self.account/(units*price)>1:
-            units+=1
+        while self.account / (units * price) > 1:
+            units += 1
         # callculating with fraction
-        possible_buys=units*fraction
+        possible_buys = units * fraction
         # retuning value
         return possible_buys
 
@@ -209,9 +209,9 @@ class Stock:
             # reading price from dantaframe
             price = latest[0]['05. price'][0]
         # checking how many sells
-        possible_sells = self.units*fraction
+        possible_sells = self.units * fraction
         # calculating profits
-        profit_abs= (possible_sells*self.broker_fee)*self.units
+        profit_abs = (possible_sells * self.broker_fee) * self.units
         # retuning vales
         return profit_abs, possible_sells
 
@@ -224,7 +224,7 @@ class Stock:
 
 
 if __name__ == "__main__":
-    ibm = Stock('IBM',check_if_exists=True)
-    ibm.buy(4,price=100)
+    ibm = Stock('IBM', check_if_exists=True)
+    ibm.buy(4, price=100)
     print(ibm.get_last_log())
     print(ibm.get_possible_buy(price=100))
