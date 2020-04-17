@@ -5,7 +5,7 @@ from TradeStocks import Stock
 
 class Model(Stock):
 
-    def __init__(self, symbol, simulation=True, start_acc=1000, fee=0.01, interval='daily'):
+    def __init__(self, symbol, simulation=True, start_acc=10000, fee=0.01, interval='daily'):
         super().__init__(symbol, start_acc=start_acc, fee=fee, check_if_exists=False)
         self.sim = simulation
         self.interval = interval
@@ -14,16 +14,16 @@ class Model(Stock):
         range_high = 0.9
         range_low = 1.1
         if open < close and high * range_high < close:
-            units = self.get_possible_buy(price=close, fraction=1)
+            units = self.get_possible_buy(price=close, fraction=0.5)
             self.buy(units, price=close)
-        if open < close:
-            units = self.get_possible_buy(price=close, fraction=0.4)
+        elif open < close:
+            units = self.get_possible_buy(price=close, fraction=0.2)
             self.buy(units, price=close)
-        if open > close and low * range_low > close:
-            abs, units = self.get_possible_sell(price=close, fraction=1)
+        elif open > close and low * range_low > close:
+            abs, units = self.get_possible_sell(price=close, fraction=0.5)
             self.sell(units, price=close)
-        if open > close:
-            abs, units = self.get_possible_sell(price=close, fraction=0.4)
+        elif open > close:
+            abs, units = self.get_possible_sell(price=close, fraction=0.2)
             self.sell(units, price=close)
 
     def run(self):
