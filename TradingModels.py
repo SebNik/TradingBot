@@ -12,8 +12,21 @@ class Model(Stock):
 
 
     def __simple_high_low(self, open=0, close=0, high=0, low=0, volume=0):
+        range_high=0.9
+        range_low=1.1
+        if open<close and high*range_high<close:
+            units=self.get_possible_buy(price=close, fraction=1)
+            self.buy(units, price=close)
+        if open<close:
+            units = self.get_possible_buy(price=close, fraction=0.4)
+            self.buy(units, price=close)
+        if open>close and low*range_low>close:
+            abs, units = self.get_possible_sell(price=close, fraction=1)
+            self.sell(units, price=close)
         if open>close:
-            None
+            abs, units = self.get_possible_sell(price=close, fraction=0.4)
+            self.sell(units, price=close)
+
 
     def run(self):
         # this function will run all coded models
