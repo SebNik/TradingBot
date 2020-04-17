@@ -122,7 +122,7 @@ class Stock:
         # closing the connection
         conn.close()
 
-    def read_stock_price(self):
+    def __read_stock_price(self):
         # read the stock price latest
         import GetStockData
         data_latest = GetStockData.get_data_latest(self.symbol)
@@ -138,7 +138,7 @@ class Stock:
         # check for simulation
         if price==0:
             # no simulation uses real
-            latest = self.read_stock_price()
+            latest = self.__read_stock_price()
             last_price = latest[0]['05. price'][0]
             # use normal state
             state = 'BUY'
@@ -156,7 +156,7 @@ class Stock:
         if self.units >= units_to_sell:
             if price == 0:
                 # no simulation uses real
-                latest = self.read_stock_price()
+                latest = self.__read_stock_price()
                 last_price = latest[0]['05. price'][0]
                 # use normal state
                 state = 'SELL'
