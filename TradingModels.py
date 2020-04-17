@@ -36,6 +36,8 @@ class Model(Stock):
             sim = Simulation(self.symbol, interval=self.interval, date_range=[[2004, 1, 1], [2004, 12, 31]])
             # data is loaded in for the for loop
             row, count, index = sim.get_price()
+            self.sim_index = index
+            self.sim_count = count
             # for loop with real stuff is starting
             for i in range(0, int(count['date'])):
                 # reading new data from simulation
@@ -46,15 +48,26 @@ class Model(Stock):
                 high = float(row['2. high'])
                 low = float(row['3. low'])
                 volume = float(row['5. volume'])
+                # setting last nums
+                self.sim_close = close
                 # calling model
                 self.__simple_high_low(open=open, close=close, high=high, low=low, volume=volume)
 
+    def get_depot_value(self):
+        last_price = self.sim_close
+        return float(self.account + (self.units * last_price))
 
+    def get_profit(self):
+        return float(self.get_depot_value() / self.start_acc)
 
     def analysis_numbers(self):
         # this function is calculating relevant numbers for a analysis
-        profit =
+        profit = self.get_profit()
+        buys, sells = self.get_transaction_count()
+        print(buys)
+
 
 if __name__ == '__main__':
     simple_model = Model('IBM')
     simple_model.run()
+    simple_model.analysis_numbers()
