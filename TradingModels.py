@@ -64,10 +64,16 @@ class Model(Stock):
         # this function is calculating relevant numbers for a analysis
         profit = self.get_profit()
         buys, sells = self.get_transaction_count()
-        print(buys)
+        dic = {
+            'Profit': profit,
+            'Buys': buys,
+            'Sells': sells
+        }
+        return dic
 
 
 if __name__ == '__main__':
     simple_model = Model('IBM')
     simple_model.run()
-    simple_model.analysis_numbers()
+    analysis_numbers_dict = simple_model.analysis_numbers()
+    print(analysis_numbers_dict)
