@@ -126,7 +126,7 @@ class Stock:
         # closing the connection
         conn.close()
 
-    def __read_stock_price(self):
+    def _read_stock_price(self):
         # read the stock price latest
         import GetStockData
         data_latest = GetStockData.get_data_latest(self.symbol)
@@ -143,7 +143,7 @@ class Stock:
             # check for simulation
             if price == 0:
                 # no simulation uses real
-                latest = self.__read_stock_price()
+                latest = self._read_stock_price()
                 last_price = latest[0]['05. price'][0]
                 # use normal state
                 state = 'BUY'
@@ -162,7 +162,7 @@ class Stock:
             if self.units >= units_to_sell:
                 if price == 0:
                     # no simulation uses real
-                    latest = self.__read_stock_price()
+                    latest = self._read_stock_price()
                     last_price = latest[0]['05. price'][0]
                     # use normal state
                     state = 'SELL'
@@ -194,7 +194,7 @@ class Stock:
         # this function will find out how many units can be bought
         if price == 0:
             # no simulation uses real
-            latest = self.__read_stock_price()
+            latest = self._read_stock_price()
             # reading price from dantaframe
             price = latest[0]['05. price'][0]
         # setting starting point
@@ -211,7 +211,7 @@ class Stock:
         # this function will find out how many units can be sold
         if price == 0:
             # no simulation uses real
-            latest = self.__read_stock_price()
+            latest = self._read_stock_price()
             # reading price from dantaframe
             price = latest[0]['05. price'][0]
         # checking how many sells
