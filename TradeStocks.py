@@ -208,8 +208,11 @@ class Stock:
             latest = self.__read_stock_price()
             # reading price from dantaframe
             price = latest[0]['05. price'][0]
+        # checking how many sells
         possible_sells = self.units*fraction
+        # calculating profits
         profit_abs= (possible_sells*self.broker_fee)*self.units
+        # retuning vales
         return profit_abs, possible_sells
 
     def __repr__(self):
