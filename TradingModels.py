@@ -11,8 +11,9 @@ class Model(Stock):
         self.interval = interval
 
 
-    def simple_high_low(self, open=0, close=0, high=0, low=0, volume=0):
-        None
+    def __simple_high_low(self, open=0, close=0, high=0, low=0, volume=0):
+        if open>close:
+            None
 
     def run(self):
         # this function will run all coded models
@@ -26,13 +27,16 @@ class Model(Stock):
             row, count, index = sim.get_price()
             # for loop with real stuff is starting
             for i in range(0, int(count['date'])):
+                #reading new data from simulation
                 row, count, index = sim.get_price(index=i)
+                # setting vars for model
                 close = float(row['4. close'])
                 open = float(row['1. open'])
                 high = float(row['2. high'])
                 low = float(row['3. low'])
                 volume = float(row['5. volume'])
-                self.simple_high_low(open=open, close=close, high=high, low=low, volume=volume)
+                # calling model
+                self.__simple_high_low(open=open, close=close, high=high, low=low, volume=volume)
 
 
 if __name__ == '__main__':
