@@ -7,6 +7,7 @@ class Stock:
         # this function is the init
         self.symbol = symbol
         self.table_name = symbol.upper() + '_Account'
+        self.path_database = '/home/niklas/Desktop/TradingBot/Transactions/Transactions-{}.db'.format(self.symbol)
         # checking if possible to read from older version
         if check_if_exists:
             # this function will check if there is old data that can be used
@@ -17,9 +18,9 @@ class Stock:
             # creating path
             file = '/home/niklas/Desktop/TradingBot/Transactions/Transactions-{}.db'.format(self.symbol)
             # checking if database already exists
-            if os.path.isfile(file):
+            if os.path.isfileself.path_database:
                 # already existing, establishing connection
-                conn = sqlite3.connect(file)
+                conn = sqlite3.connectself.path_database
                 c = conn.cursor()
                 # now the database is connected through
                 # next we are going to check if the table already exists
@@ -60,16 +61,16 @@ class Stock:
         now = datetime.now()
         timestamp = datetime.timestamp(now)
         # checking if already exists
-        if not os.path.isfile(file):
+        if not os.path.isfileself.path_database:
             # creating file and table
-            conn = sqlite3.connect(file)
+            conn = sqlite3.connectself.path_database
             c = conn.cursor()
             c.execute(
                 'CREATE TABLE {} (Time TEXT, ID_Function TEXT, ID TEXT, symbol TEXT, price_each REAL, units REAL, '
                 'price_total REAL, profit REAL, fee REAL, account REAL)'.format(self.table_name))
         else:
             # already existing, establishing connection
-            conn = sqlite3.connect(file)
+            conn = sqlite3.connectself.path_database
             c = conn.cursor()
             # now the database is connected through
             # next we are going to check if the table already exists
@@ -175,6 +176,80 @@ class Stock:
                 self.account += units_to_sell * (float(last_price) - units_to_sell * self.broker_fee)
                 self._log_to_database(state, last_price=last_price, units=units_to_sell, savingtoCsv=True)
 
+    def get_transaction_count(self):
+        # this function will count how many buys or sells there where
+        # this function will write the log for transactions
+        # loading the needed modules
+        import os
+        import sqlite3
+        import pandas as pd
+        # checking if already exists
+        if not os.path.isfile(self.path_database):
+            # creating file and table
+            conn = sqlite3.connect(self.path_database)
+            c = conn.cursor()
+            c.execute(
+                'CREATE TABLE {} (Time TEXT, ID_Function TEXT, ID TEXT, symbol TEXT, price_each REAL, units REAL, '
+                'price_total REAL, profit REAL, fee REAL, account REAL)'.format(self.table_name))
+        else:
+            # already existing, establishing connection
+            conn = sqlite3.connectself.path_database
+            c = conn.cursor()
+            # now the database is connected through
+            # next we are going to check if the table already exists
+            table_check = "SELECT name FROM sqlite_master WHERE type='table' AND name='{}';".format(self.table_name)
+            c.execute(table_check)
+            result = c.fetchone()
+            if result:
+                # table found
+                None
+            else:
+                # table not found
+                c.execute(
+                    'CREATE TABLE {} (Time TEXT, ID_Function TEXT, ID TEXT, symbol TEXT, price_each REAL, units REAL, '
+                    'price_total REAL, profit REAL, fee REAL, account REAL)'.format(self.table_name))
+        # read data which is already in database
+        df = pd.read_sql_query("SELECT * FROM {}".format(self.table_name), conn)
+        # calculating profit
+        if 'BUY' in action:
+            profit = -1 * float(units * float(last_price)) / float(
+                float(self.account) + float(units * float(last_price)))
+        elif 'SELL' in action:
+            profit = float(units * float(last_price)) / float(float(self.account) + float(units * float(last_price)))
+        else:
+            profit = 0
+        # counting rows
+        index = df.index
+        count = len(index)
+        # creating row with data
+        # starting with dictionary
+        row_dict = {
+            'Time': [timestamp],
+            'ID_Function': [action],
+            'ID': [count],
+            'symbol': [self.symbol],
+            'price_each': [last_price],
+            'units': [units],
+            'price_total': [float(units * float(last_price))],
+            'profit': [profit],
+            'fee': [self.broker_fee],
+            'account': [self.account]
+        }
+        df_row = pd.DataFrame(row_dict)
+        # new row added to new dataframe
+        new_df = pd.concat([df, df_row], ignore_index=True)
+        # check if need to save to CSV-File
+        if savingtoCsv:
+            # saved data csv-file data
+            new_df.to_csv('/home/niklas/Desktop/TradingBot/Transactions/Transactions-{}.csv'.format(self.symbol),
+                          sep=';')
+        # write data to database
+        new_df.to_sql(self.table_name, conn, if_exists='replace', index=False)
+        # committing the saves
+        conn.commit()
+        # closing the connection
+        conn.close()
+
     def get_last_log(self, lines=1):
         # loading the needed modules
         import sqlite3
@@ -182,7 +257,7 @@ class Stock:
         # setting file path
         file = '/home/niklas/Desktop/TradingBot/Transactions/Transactions-{}.db'.format(self.symbol)
         # establishing connection to database
-        conn = sqlite3.connect(file)
+        conn = sqlite3.connectself.path_database
         # read data which is already in database
         df = pd.read_sql_query("SELECT * FROM {}".format(self.table_name), conn)
         # closing connection
