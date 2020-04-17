@@ -18,9 +18,9 @@ class Stock:
             # creating path
             file = '/home/niklas/Desktop/TradingBot/Transactions/Transactions-{}.db'.format(self.symbol)
             # checking if database already exists
-            if os.path.isfileself.path_database:
+            if os.path.isfile(self.path_database):
                 # already existing, establishing connection
-                conn = sqlite3.connectself.path_database
+                conn = sqlite3.connect(self.path_database)
                 c = conn.cursor()
                 # now the database is connected through
                 # next we are going to check if the table already exists
@@ -61,16 +61,16 @@ class Stock:
         now = datetime.now()
         timestamp = datetime.timestamp(now)
         # checking if already exists
-        if not os.path.isfileself.path_database:
+        if not os.path.isfile(self.path_database):
             # creating file and table
-            conn = sqlite3.connectself.path_database
+            conn = sqlite3.connect(self.path_database)
             c = conn.cursor()
             c.execute(
                 'CREATE TABLE {} (Time TEXT, ID_Function TEXT, ID TEXT, symbol TEXT, price_each REAL, units REAL, '
                 'price_total REAL, profit REAL, fee REAL, account REAL)'.format(self.table_name))
         else:
             # already existing, establishing connection
-            conn = sqlite3.connectself.path_database
+            conn = sqlite3.connect(self.path_database)
             c = conn.cursor()
             # now the database is connected through
             # next we are going to check if the table already exists
@@ -193,7 +193,7 @@ class Stock:
                 'price_total REAL, profit REAL, fee REAL, account REAL)'.format(self.table_name))
         else:
             # already existing, establishing connection
-            conn = sqlite3.connectself.path_database
+            conn = sqlite3.connect(self.path_database)
             c = conn.cursor()
             # now the database is connected through
             # next we are going to check if the table already exists
@@ -257,7 +257,7 @@ class Stock:
         # setting file path
         file = '/home/niklas/Desktop/TradingBot/Transactions/Transactions-{}.db'.format(self.symbol)
         # establishing connection to database
-        conn = sqlite3.connectself.path_database
+        conn = sqlite3.connect(self.path_database)
         # read data which is already in database
         df = pd.read_sql_query("SELECT * FROM {}".format(self.table_name), conn)
         # closing connection
