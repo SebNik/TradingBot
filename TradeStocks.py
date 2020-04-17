@@ -134,40 +134,42 @@ class Stock:
         self._log_to_database('CHANGE')
 
     def buy(self, units_to_buy, price=0):
-        # buying stocks
-        # check for simulation
-        if price == 0:
-            # no simulation uses real
-            latest = self.__read_stock_price()
-            last_price = latest[0]['05. price'][0]
-            # use normal state
-            state = 'BUY'
-        else:
-            # simulation use given price
-            last_price = price
-            # set different state
-            state = 'S-BUY'
-        self.units += units_to_buy
-        self.account -= units_to_buy * (float(last_price) + units_to_buy * self.broker_fee)
-        self._log_to_database(state, last_price=last_price, units=units_to_buy, savingtoCsv=True)
-
-    def sell(self, units_to_sell, price=0):
-        # selling stocks
-        if self.units >= units_to_sell:
+        if units_to_buy>0:
+            # buying stocks
+            # check for simulation
             if price == 0:
                 # no simulation uses real
                 latest = self.__read_stock_price()
                 last_price = latest[0]['05. price'][0]
                 # use normal state
-                state = 'SELL'
+                state = 'BUY'
             else:
                 # simulation use given price
                 last_price = price
                 # set different state
-                state = 'S-SELL'
-            self.units -= units_to_sell
-            self.account += units_to_sell * (float(last_price) - units_to_sell * self.broker_fee)
-            self._log_to_database(state, last_price=last_price, units=units_to_sell, savingtoCsv=True)
+                state = 'S-BUY'
+            self.units += units_to_buy
+            self.account -= units_to_buy * (float(last_price) + units_to_buy * self.broker_fee)
+            self._log_to_database(state, last_price=last_price, units=units_to_buy, savingtoCsv=True)
+
+    def sell(self, units_to_sell, price=0):
+        if units_to_sell>0:
+            # selling stocks
+            if self.units >= units_to_sell:
+                if price == 0:
+                    # no simulation uses real
+                    latest = self.__read_stock_price()
+                    last_price = latest[0]['05. price'][0]
+                    # use normal state
+                    state = 'SELL'
+                else:
+                    # simulation use given price
+                    last_price = price
+                    # set different state
+                    state = 'S-SELL'
+                self.units -= units_to_sell
+                self.account += units_to_sell * (float(last_price) - units_to_sell * self.broker_fee)
+                self._log_to_database(state, last_price=last_price, units=units_to_sell, savingtoCsv=True)
 
     def get_last_log(self, lines=1):
         # loading the needed modules
@@ -196,10 +198,10 @@ class Stock:
         # iterating and checking how much possible
         while self.account / (units * price) > 1:
             units += 1
-        # callculating with fraction
+        # calculating with fraction
         possible_buys = units * fraction
         # retuning value
-        return possible_buys
+        return int(possible_buys)
 
     def get_possible_sell(self, price=0, fraction=1):
         # this function will find out how many units can be sold
@@ -213,7 +215,7 @@ class Stock:
         # calculating profits
         profit_abs = (possible_sells * self.broker_fee) * self.units
         # retuning vales
-        return profit_abs, possible_sells
+        return profit_abs, int(possible_sells)
 
     def __repr__(self):
         return self
