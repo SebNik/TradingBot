@@ -18,7 +18,7 @@ class Simulation:
             GetStockData.get_data_daily(self.symbol, 'full', savingtoCsv=True)
             self.table_name = 'Daily' + self.symbol + 'daily'
         if self.interval == 'weekly':
-            GetStockData.get_data_weekly(self.symbol,savingtoCsv=False)
+            GetStockData.get_data_weekly(self.symbol, savingtoCsv=False)
             self.table_name = 'Weekly' + self.symbol + 'weekly'
         if self.interval == 'monthly':
             GetStockData.get_data_monthly(self.symbol, False)
@@ -34,49 +34,30 @@ class Simulation:
         # filtering data
         if date_range is not None:
             # setting vars
-            self.date1 = datetime.datetime(date_range[0][0],date_range[0][1],date_range[0][2])
-            self.date2 = datetime.datetime(date_range[1][0],date_range[1][1],date_range[1][2])
+            self.date1 = datetime.datetime(date_range[0][0], date_range[0][1], date_range[0][2])
+            self.date2 = datetime.datetime(date_range[1][0], date_range[1][1], date_range[1][2])
             self.date_range = date_range
             # creating list with dates with pandas nly buisness days included
             dates_list = pd.bdate_range(self.date1, self.date2).strftime("%Y-%m-%d").tolist()
             df_filtered = df[df['date'].isin(dates_list)]
-            self.data=df_filtered
+            self.data = df_filtered
         else:
-            self.data=df
-            self.date1 = datetime.datetime(date_range[0][0],date_range[0][1],date_range[0][2])
-            self.date2 = datetime.datetime(date_range[1][0],date_range[1][1],date_range[1][2])
+            self.data = df
+            self.date1 = 0
+            self.date2 = 0
             self.date_range = date_range
-            #selecting data by index
-        # row_data = df.loc[index, :]
-        # # counting rows in dataframe
-        # row_count = df.count()
-        # return row_data, row_count, index
+        # counting rows in dataframe
+        self.row_count = self.data.count()
 
     def get_price(self, index=0):
-        # importing modules
-        import sqlite3
-        import pandas as pd
-        # connecting to database
-        conn = sqlite3.connect(self.file)
-        # reading the database into  pandas dataframe
-        df = pd.read_sql_query("SELECT * FROM {}".format(self.table_name), conn)
-        # filtering data
-        if self.date_range is not None:
-            condition_one = self.filter_value in df["date"]
-            list=[self.filter_value]
-            bla = df[df['date'].isin(list)]
-            print(bla.head())
-        # selecting data by index
-        row_data = df.loc[index, :]
-        # counting rows in dataframe
-        row_count=df.count()
-        return row_data, row_count, index
+        row_data = self.data.loc[index, :]
+        return row_data, self.row_count, index
 
     def __str__(self):
         return 'Simulation: Symbol: ' + self.symbol + ' Interval: ' + self.interval
 
 
 if __name__ == "__main__":
-    sim = Simulation('IBM', interval='daily', date_range=[[2004,1,1],[2004,12,31]])
-    d,c,i=sim.get_price()
+    sim = Simulation('IBM', interval='daily', date_range=[[2004, 1, 1], [2004, 12, 31]])
+    d, c, i = sim.get_price()
     print(d)
