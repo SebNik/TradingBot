@@ -42,4 +42,5 @@ class Simulation:
 
 if __name__ == "__main__":
     sim = Simulation('IBM', interval='daily')
-    sim.get_price()
+    d,c,i=sim.get_price()
+    print(d)
