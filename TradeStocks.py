@@ -85,9 +85,9 @@ class Stock:
         df = pd.read_sql_query("SELECT * FROM {}".format(self.table_name), conn)
         # calculating profit
         if 'BUY' in action:
-            profit = -100 * float(self.account) / float(float(self.account) + float(units * float(last_price)))
+            profit = -100 * float(float(self.account) + float(units * float(last_price))) / float(self.account)
         elif 'SELL' in action:
-            profit = 100 * float(self.account) / float(float(self.account) + float(units * float(last_price)))
+            profit = 100 * float(float(self.account) + float(units * float(last_price))) / float(self.account)
         else:
             profit = 0
         # counting rows
