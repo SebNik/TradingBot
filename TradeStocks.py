@@ -43,7 +43,7 @@ class Stock:
             self.broker_fee = fee
             self.units = 0
 
-    def _log_to_database(self, action, last_price=0, units=0, savingtoCsv=False):
+    def _log_to_database(self, action, last_price=0, units=0, savingtoCsv=True):
         # this function will write the log for transactions
         # loading the needed modules
         import os
