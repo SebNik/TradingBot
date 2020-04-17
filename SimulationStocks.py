@@ -41,6 +41,7 @@ class Simulation:
             dates_list = pd.bdate_range(self.date1, self.date2).strftime("%Y-%m-%d").tolist()
             df_filtered = df[df['date'].isin(dates_list)]
             self.data = df_filtered
+            self.data.reset_index(inplace=True, drop=True)
         else:
             self.data = df
             self.date1 = 0
