@@ -198,8 +198,8 @@ class Stock:
                 # read data which is already in database
                 df = pd.read_sql_query("SELECT * FROM {}".format(self.table_name), conn)
                 # counting buys and sells
-                buys = len(df['BUY' in df['ID_Function']])
-                sells = len(df['SELL' in df['ID_Function']])
+                buys = len(df[df['ID_Function'] == 'S-BUY'])
+                sells = len(df[df['ID_Function'] == 'S-SELL'])
                 # closing the connection
                 conn.close()
                 # returning vales
