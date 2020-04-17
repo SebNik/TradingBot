@@ -12,7 +12,7 @@ class Simulation:
         self.file = '/home/niklas/Desktop/TradingBot/StockData/StockData-{}.db'.format(symbol)
         # starting checking for right playing option
         if self.interval == 'daily':
-            a,b=GetStockData.get_data_daily(self.symbol, 'full', savingtoCsv=False)
+            GetStockData.get_data_daily(self.symbol, 'full', savingtoCsv=True)
             self.table_name = 'Daily' + self.symbol + 'daily'
         if self.interval == 'weekly':
             GetStockData.get_data_weekly(self.symbol,savingtoCsv=False)
