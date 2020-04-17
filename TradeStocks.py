@@ -32,14 +32,17 @@ class Stock:
                     df = pd.read_sql_query("SELECT * FROM {}".format(self.table_name), conn)
                     # setting vars
                     self.account = float(df.tail(1)['account'])
+                    self.start_acc = float(df.tail(1)['account'])
                     self.broker_fee = float(df.tail(1)['fee'])
                     self.units = int(df.tail(1)['units'])
             else:
                 self.account = start_acc
+                self.start_acc = start_acc
                 self.broker_fee = fee
                 self.units = 0
         else:
             self.account = start_acc
+            self.start_acc = start_acc
             self.broker_fee = fee
             self.units = 0
 

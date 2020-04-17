@@ -50,6 +50,11 @@ class Model(Stock):
                 self.__simple_high_low(open=open, close=close, high=high, low=low, volume=volume)
 
 
+
+    def analysis_numbers(self):
+        # this function is calculating relevant numbers for a analysis
+        profit =
+
 if __name__ == '__main__':
     simple_model = Model('IBM')
     simple_model.run()
