@@ -33,15 +33,20 @@ class Simulation:
         df = pd.read_sql_query("SELECT * FROM {}".format(self.table_name), conn)
         # filtering data
         if date_range is not None:
-            # creating list with dates
+            # setting vars
             self.date1 = datetime.datetime(date_range[0][0],date_range[0][1],date_range[0][2])
             self.date2 = datetime.datetime(date_range[1][0],date_range[1][1],date_range[1][2])
             self.date_range = date_range
-            dates_list = pd.bdate_range(self.date1, self.date2)
-            print(dates_list)
-            bla = df[df['date'].isin(dates_list)]
-            print(bla.head())
-        # # selecting data by index
+            # creating list with dates with pandas nly buisness days included
+            dates_list = pd.bdate_range(self.date1, self.date2).strftime("%Y-%m-%d").tolist()
+            df_filtered = df[df['date'].isin(dates_list)]
+            self.data=df_filtered
+        else:
+            self.data=df
+            self.date1 = datetime.datetime(date_range[0][0],date_range[0][1],date_range[0][2])
+            self.date2 = datetime.datetime(date_range[1][0],date_range[1][1],date_range[1][2])
+            self.date_range = date_range
+            #selecting data by index
         # row_data = df.loc[index, :]
         # # counting rows in dataframe
         # row_count = df.count()
