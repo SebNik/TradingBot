@@ -199,9 +199,9 @@ class Stock:
         while self.account / (units * price) > 1:
             units += 1
         # calculating with fraction
-        possible_buys = units * fraction
+        possible_buys = int((units-1) * fraction)
         # retuning value
-        return int(possible_buys)
+        return possible_buys
 
     def get_possible_sell(self, price=0, fraction=1):
         # this function will find out how many units can be sold
@@ -211,11 +211,11 @@ class Stock:
             # reading price from dantaframe
             price = latest[0]['05. price'][0]
         # checking how many sells
-        possible_sells = self.units * fraction
+        possible_sells = int(self.units * fraction)
         # calculating profits
         profit_abs = (possible_sells * self.broker_fee) * self.units
         # retuning vales
-        return profit_abs, int(possible_sells)
+        return profit_abs, possible_sells
 
     def __repr__(self):
         return self
