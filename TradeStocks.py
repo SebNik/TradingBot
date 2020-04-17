@@ -184,14 +184,7 @@ class Stock:
         import sqlite3
         import pandas as pd
         # checking if already exists
-        if not os.path.isfile(self.path_database):
-            # creating file and table
-            conn = sqlite3.connect(self.path_database)
-            c = conn.cursor()
-            c.execute(
-                'CREATE TABLE {} (Time TEXT, ID_Function TEXT, ID TEXT, symbol TEXT, price_each REAL, units REAL, '
-                'price_total REAL, profit REAL, fee REAL, account REAL)'.format(self.table_name))
-        else:
+        if os.path.isfile(self.path_database):
             # already existing, establishing connection
             conn = sqlite3.connect(self.path_database)
             c = conn.cursor()
@@ -202,53 +195,15 @@ class Stock:
             result = c.fetchone()
             if result:
                 # table found
-                None
-            else:
-                # table not found
-                c.execute(
-                    'CREATE TABLE {} (Time TEXT, ID_Function TEXT, ID TEXT, symbol TEXT, price_each REAL, units REAL, '
-                    'price_total REAL, profit REAL, fee REAL, account REAL)'.format(self.table_name))
-        # read data which is already in database
-        df = pd.read_sql_query("SELECT * FROM {}".format(self.table_name), conn)
-        # calculating profit
-        if 'BUY' in action:
-            profit = -1 * float(units * float(last_price)) / float(
-                float(self.account) + float(units * float(last_price)))
-        elif 'SELL' in action:
-            profit = float(units * float(last_price)) / float(float(self.account) + float(units * float(last_price)))
-        else:
-            profit = 0
-        # counting rows
-        index = df.index
-        count = len(index)
-        # creating row with data
-        # starting with dictionary
-        row_dict = {
-            'Time': [timestamp],
-            'ID_Function': [action],
-            'ID': [count],
-            'symbol': [self.symbol],
-            'price_each': [last_price],
-            'units': [units],
-            'price_total': [float(units * float(last_price))],
-            'profit': [profit],
-            'fee': [self.broker_fee],
-            'account': [self.account]
-        }
-        df_row = pd.DataFrame(row_dict)
-        # new row added to new dataframe
-        new_df = pd.concat([df, df_row], ignore_index=True)
-        # check if need to save to CSV-File
-        if savingtoCsv:
-            # saved data csv-file data
-            new_df.to_csv('/home/niklas/Desktop/TradingBot/Transactions/Transactions-{}.csv'.format(self.symbol),
-                          sep=';')
-        # write data to database
-        new_df.to_sql(self.table_name, conn, if_exists='replace', index=False)
-        # committing the saves
-        conn.commit()
-        # closing the connection
-        conn.close()
+                # read data which is already in database
+                df = pd.read_sql_query("SELECT * FROM {}".format(self.table_name), conn)
+                # counting buys and sells
+                buys = len(df['BUY' in df['ID_Function']])
+                sells = len(df['SELL' in df['ID_Function']])
+                # closing the connection
+                conn.close()
+                # returning vales
+                return buys, sells
 
     def get_last_log(self, lines=1):
         # loading the needed modules
