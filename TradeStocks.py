@@ -189,14 +189,28 @@ class Stock:
         if price==0:
             # no simulation uses real
             latest = self.__read_stock_price()
+            # reading price from dantaframe
             price = latest[0]['05. price'][0]
+        # setting starting point
         units=1
+        # iterating and checking how much possible
         while self.account/(units*price)>1:
             units+=1
+        # callculating with fraction
         possible_buys=units*fraction
+        # retuning value
         return possible_buys
 
-    def get_possible_sell
+    def get_possible_sell(self, price=0, fraction=1):
+        # this function will find out how many units can be sold
+        if price == 0:
+            # no simulation uses real
+            latest = self.__read_stock_price()
+            # reading price from dantaframe
+            price = latest[0]['05. price'][0]
+        possible_sells = self.units*fraction
+        profit_abs= (possible_sells*self.broker_fee)*self.units
+        return profit_abs, possible_sells
 
     def __repr__(self):
         return self
