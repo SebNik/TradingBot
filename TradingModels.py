@@ -86,6 +86,10 @@ class Model(Stock):
         # retuning dic
         return dic
 
+    def analysis_transaction_time_grapgh(self):
+        # this function will plot a graph which shows the buy and sell times
+        None
+
 
 if __name__ == '__main__':
     simple_model = Model('IBM')
