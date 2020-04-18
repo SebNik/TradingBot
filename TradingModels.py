@@ -10,21 +10,21 @@ class Model(Stock):
         self.sim = simulation
         self.interval = interval
 
-    def __simple_high_low(self, open=0, close=0, high=0, low=0, volume=0):
+    def __simple_high_low(self, open=0, close=0, high=0, low=0, volume=0, date_sim=0):
         range_high = 0.9
         range_low = 1.1
         if open < close and high * range_high < close:
             units = self.get_possible_buy(price=close, fraction=0.5)
-            self.buy(units, price=close)
+            self.buy(units, price=close, date_sim=date_sim)
         elif open < close:
             units = self.get_possible_buy(price=close, fraction=0.2)
-            self.buy(units, price=close)
+            self.buy(units, price=close, date_sim=date_sim)
         elif open > close and low * range_low > close:
             abs, units = self.get_possible_sell(price=close, fraction=0.5)
-            self.sell(units, price=close)
+            self.sell(units, price=close, date_sim=date_sim)
         elif open > close:
             abs, units = self.get_possible_sell(price=close, fraction=0.2)
-            self.sell(units, price=close)
+            self.sell(units, price=close, date_sim=date_sim)
 
     def run(self):
         # this function will run all coded models
