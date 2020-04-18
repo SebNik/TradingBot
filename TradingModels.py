@@ -96,26 +96,16 @@ class Model(Simulation):
         # define title of plot
         plt.title(**parameters['title'])
         # setting x-axis and y-axis
-        plt.ylabel(parameters['y_label'])
-        plt.xlabel(parameters['x_label'])
+        plt.ylabel(parameters['y_label']['label'],parameters['y_label'])
+        plt.xlabel(parameters['x_label']['label'],parameters['x_label'])
+        # grid settings
+        plt.grid(which="major", color='k', linestyle='-.', linewidth=0.5)
         # starting plotting price line
         self.data['4. close'].plot(**parameters['line1'])
         # showing the legend
         plt.legend(**parameters['legend'])
         # showing the final graph
         plt.show()
-
-        #
-        # # Define the label for the title of the figure
-        #
-        #
-        # # Define the labels for x-axis and y-axis
-        # plt.ylabel('Cumulative Returns', fontsize=14)
-        # plt.xlabel('Year', fontsize=14)
-        #
-        # # Plot the grid lines
-        # plt.grid(which="major", color='k', linestyle='-.', linewidth=0.5)
-        # plt.show()
 
 
 if __name__ == '__main__':

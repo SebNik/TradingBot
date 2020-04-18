@@ -14,17 +14,17 @@
   },
   "x_label":
   {
-    "xlabel": "Date",
-    "fontsize": 14
+    "label": "Date",
+    "fontsize": 13
   },
   "y_label":
   {
-    "ylabel": "Stock-Price",
-    "fontsize": 14
+    "label": "Stock-Price",
+    "fontsize": 13
   },
   "line1": {
     "label": "Stock-Price",
-    "color": "r",
+    "color": "y",
     "linewidth": "4"
   }
 }
