@@ -83,8 +83,13 @@ class Model(Simulation):
     def analysis_transaction_time_graph(self):
         # this function will plot a graph which shows the buy and sell times
         # loading modules
+        import json
         import matplotlib.pyplot as plt
-        plt.plot(self.data['date'],self.data['4. close'])
+        # reading in json parameters
+        with open('/home/niklas/Desktop/TradingBot/Parameters/graph.json') as json_file:
+            data = json.load(json_file)
+        # starting plotting price line
+        plt.plot(self.data['date'],self.data['4. close'], **data['line1'])
         plt.show()
 
 
@@ -93,4 +98,4 @@ if __name__ == '__main__':
     simple_model.run()
     analysis_numbers_dict = simple_model.analysis_numbers(to_json_file=True)
     print(analysis_numbers_dict)
-    simple_model.analysis_transaction_time_grapgh()
+    simple_model.analysis_transaction_time_graph()
