@@ -58,7 +58,7 @@ class Model(Stock):
         return float(self.account + (self.units * last_price))
 
     def _get_profit(self):
-        return float(self.get_depot_value() / self.start_acc)
+        return float(self._get_depot_value() / self.start_acc)
 
     def analysis_numbers(self, to_json_file=False):
         # this function is calculating relevant numbers for a analysis
@@ -87,5 +87,5 @@ class Model(Stock):
 if __name__ == '__main__':
     simple_model = Model('IBM')
     simple_model.run()
-    analysis_numbers_dict = simple_model.analysis_numbers()
+    analysis_numbers_dict = simple_model.analysis_numbers(to_json_file=True)
     print(analysis_numbers_dict)
