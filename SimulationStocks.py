@@ -11,7 +11,7 @@ class Simulation(Stock):
         import pandas as pd
         import datetime
         # setting Stock data class
-        super().__init__(symbol=symbol,start_acc=start_acc, fee=fee)
+        super().__init__(symbol=symbol, start_acc=start_acc, fee=fee)
         # setting self.vars
         self.symbol = symbol
         self.interval = interval
