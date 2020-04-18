@@ -36,11 +36,13 @@ class Simulation:
         # filtering data
         if date_range is not None:
             # setting vars
-            self.date1 = datetime.datetime(date_range[0][0], date_range[0][1], date_range[0][2])
-            self.date2 = datetime.datetime(date_range[1][0], date_range[1][1], date_range[1][2])
+            self.date1 = datetime.datetime(date_range[0][0], date_range[0][1], date_range[0][2]).timestamp()
+            self.date2 = datetime.datetime(date_range[1][0], date_range[1][1], date_range[1][2]).timestamp()
             self.date_range = date_range
             # creating list with dates with pandas nly buisness days included
-            dates_list = pd.bdate_range(self.date1, self.date2).strftime("%Y-%m-%d").tolist()
+            dates_list = pd.bdate_range(datetime.datetime.utcfromtimestamp(self.date1).strftime('%Y-%m-%d %H:%M:%S'),
+                                        datetime.datetime.utcfromtimestamp(self.date2).strftime('%Y-%m-%d %H:%M:%S')
+                                        ).strftime("%Y-%m-%d").tolist()
             df_filtered = df[df['date'].isin(dates_list)]
             self.data = df_filtered
             self.data.reset_index(inplace=True, drop=True)
