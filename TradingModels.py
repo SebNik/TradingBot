@@ -80,9 +80,12 @@ class Model(Simulation):
         # retuning dic
         return dic
 
-    def analysis_transaction_time_grapgh(self):
+    def analysis_transaction_time_graph(self):
         # this function will plot a graph which shows the buy and sell times
-        None
+        # loading modules
+        import matplotlib.pyplot as plt
+        plt.plot(self.data['date'],self.data['4. close'])
+        plt.show()
 
 
 if __name__ == '__main__':
@@ -90,3 +93,4 @@ if __name__ == '__main__':
     simple_model.run()
     analysis_numbers_dict = simple_model.analysis_numbers(to_json_file=True)
     print(analysis_numbers_dict)
+    simple_model.analysis_transaction_time_grapgh()

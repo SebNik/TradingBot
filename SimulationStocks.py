@@ -4,14 +4,14 @@ from TradeStocks import Stock
 
 
 class Simulation(Stock):
-    def __init__(self, symbol, interval='daily', date_range=None, start_acc=1000, fee=0.01):
+    def __init__(self, symbol, interval='daily', date_range=None, start_acc=1000, fee=0.01, check=False):
         # loading in modules
         import GetStockData
         import sqlite3
         import pandas as pd
         import datetime
         # setting Stock data class
-        super().__init__(symbol=symbol, start_acc=start_acc, fee=fee)
+        super().__init__(symbol=symbol, start_acc=start_acc, fee=fee,check_if_exists=check)
         # setting self.vars
         self.symbol = symbol
         self.interval = interval
