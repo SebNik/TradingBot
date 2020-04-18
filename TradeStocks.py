@@ -47,7 +47,7 @@ class Stock:
             self.broker_fee = fee
             self.units = 0
 
-    def _log_to_database(self, action, last_price=0, units=0, savingtoCsv=True):
+    def _log_to_database(self, action, last_price=0, units=0, date_sim=0, savingtoCsv=True):
         # this function will write the log for transactions
         # loading the needed modules
         import os
@@ -57,9 +57,13 @@ class Stock:
         # checking for database
         # creating path
         file = '/home/niklas/Desktop/TradingBot/Transactions/Transactions-{}.db'.format(self.symbol)
-        # getting current time
-        now = datetime.now()
-        timestamp = datetime.timestamp(now)
+        # checking if sim is running and then replacing timestamp with sim data
+        if date_sim != 0:
+            timestamp = date_sim
+        else:
+            # getting current time
+            now = datetime.now()
+            timestamp = datetime.timestamp(now)
         # checking if already exists
         if not os.path.isfile(self.path_database):
             # creating file and table
@@ -138,7 +142,7 @@ class Stock:
         self.account += value
         self._log_to_database('CHANGE')
 
-    def buy(self, units_to_buy, price=0):
+    def buy(self, units_to_buy, price=0, date_sim=0):
         if units_to_buy > 0:
             # buying stocks
             # check for simulation
@@ -155,9 +159,9 @@ class Stock:
                 state = 'S-BUY'
             self.units += units_to_buy
             self.account -= units_to_buy * (float(last_price) + units_to_buy * self.broker_fee)
-            self._log_to_database(state, last_price=last_price, units=units_to_buy, savingtoCsv=True)
+            self._log_to_database(state, last_price=last_price, units=units_to_buy, savingtoCsv=True, date_sim=date_sim)
 
-    def sell(self, units_to_sell, price=0):
+    def sell(self, units_to_sell, price=0, date_sim=0):
         if units_to_sell > 0:
             # selling stocks
             if self.units >= units_to_sell:
@@ -174,7 +178,7 @@ class Stock:
                     state = 'S-SELL'
                 self.units -= units_to_sell
                 self.account += units_to_sell * (float(last_price) - units_to_sell * self.broker_fee)
-                self._log_to_database(state, last_price=last_price, units=units_to_sell, savingtoCsv=True)
+                self._log_to_database(state, last_price=last_price, units=units_to_sell, date_sim=date_sim, savingtoCsv=True)
 
     def get_transaction_count(self):
         # this function will count how many buys or sells there where
