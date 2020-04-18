@@ -12,6 +12,13 @@
     "fancybox": "True",
     "edgecolor": "black"
   },
+  "grid":
+  {
+    "which": "major",
+    "linestyle": "-.",
+    "color": "gray",
+    "linewidth": 1
+  },
   "x_label":
   {
     "label": "Date",
@@ -24,7 +31,7 @@
   },
   "line1": {
     "label": "Stock-Price",
-    "color": "y",
+    "color": "b",
     "linewidth": "4"
   }
 }
