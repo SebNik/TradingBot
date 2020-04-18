@@ -1,14 +1,17 @@
 # this file is responsible to manipulate stock prices in any given way
 # the easiest option would be to to this with historical dat
+from TradeStocks import Stock
 
 
-class Simulation:
-    def __init__(self, symbol, interval='daily', date_range=None):
+class Simulation(Stock):
+    def __init__(self, symbol, interval='daily', date_range=None, start_acc=1000, fee=0.01):
         # loading in modules
         import GetStockData
         import sqlite3
         import pandas as pd
         import datetime
+        # setting Stock data class
+        super().__init__(symbol=symbol,start_acc=start_acc, fee=fee)
         # setting self.vars
         self.symbol = symbol
         self.interval = interval
