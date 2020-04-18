@@ -59,7 +59,7 @@ class Stock:
         file = '/home/niklas/Desktop/TradingBot/Transactions/Transactions-{}.db'.format(self.symbol)
         # checking if sim is running and then replacing timestamp with sim data
         if date_sim != 0:
-            timestamp = date_sim
+            timestamp = str(float(datetime.strptime(date_sim, "%Y-%m-%d").timestamp()))
         else:
             # getting current time
             now = datetime.now()
