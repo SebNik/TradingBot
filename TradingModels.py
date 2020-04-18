@@ -8,6 +8,8 @@ class Model(Stock):
     def __init__(self, symbol, simulation=True, start_acc=10000, fee=0.01, interval='daily'):
         super().__init__(symbol, start_acc=start_acc, fee=fee, check_if_exists=False)
         self.sim = simulation
+        if self.sim:
+            self.date_range = [[2004, 1, 1], [2004, 12, 31]]
         self.interval = interval
 
     def __simple_high_low(self, open=0, close=0, high=0, low=0, volume=0, date_sim=0):
@@ -33,7 +35,7 @@ class Model(Stock):
             # loading in simulation
             from SimulationStocks import Simulation
             # object sim is being created
-            sim = Simulation(self.symbol, interval=self.interval, date_range=[[2004, 1, 1], [2004, 12, 31]])
+            sim = Simulation(self.symbol, interval=self.interval, date_range=self.date_range)
             # data is loaded in for the for loop
             row, count, index = sim.get_price()
             self.sim_index = index
