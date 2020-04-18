@@ -64,7 +64,9 @@ class Model(Stock):
         # this function is calculating relevant numbers for a analysis
         profit = self.get_profit()
         buys, sells = self.get_transaction_count()
+        depot_value = self.get_depot_value()
         dic = {
+            'Depot': depot_value,
             'Profit': profit,
             'Buys': buys,
             'Sells': sells
