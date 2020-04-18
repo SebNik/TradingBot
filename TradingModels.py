@@ -84,6 +84,7 @@ class Model(Simulation):
         # this function will plot a graph which shows the buy and sell times
         # loading modules
         import json
+        import datetime
         import matplotlib.pyplot as plt
         # reading in json parameters
         with open('/home/niklas/Desktop/TradingBot/Parameters/graph.json') as json_file:
@@ -91,6 +92,19 @@ class Model(Simulation):
         # starting plotting price line
         plt.plot(self.data['date'],self.data['4. close'], **data['line1'])
         plt.show()
+
+        # plt.legend()
+        #
+        # # Define the label for the title of the figure
+        # plt.title("Returns", fontsize=16)
+        #
+        # # Define the labels for x-axis and y-axis
+        # plt.ylabel('Cumulative Returns', fontsize=14)
+        # plt.xlabel('Year', fontsize=14)
+        #
+        # # Plot the grid lines
+        # plt.grid(which="major", color='k', linestyle='-.', linewidth=0.5)
+        # plt.show()
 
 
 if __name__ == '__main__':

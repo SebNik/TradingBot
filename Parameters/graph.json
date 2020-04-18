@@ -2,6 +2,7 @@
   "line1":
   {
     "label": "Stock-Price",
-    "color": "r"
+    "color": "r",
+    "linewidth": "5"
   }
 }
