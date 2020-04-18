@@ -53,24 +53,34 @@ class Model(Stock):
                 # calling model
                 self.__simple_high_low(open=open, close=close, high=high, low=low, volume=volume)
 
-    def get_depot_value(self):
+    def _get_depot_value(self):
         last_price = self.sim_close
         return float(self.account + (self.units * last_price))
 
-    def get_profit(self):
+    def _get_profit(self):
         return float(self.get_depot_value() / self.start_acc)
 
-    def analysis_numbers(self):
+    def analysis_numbers(self, to_json_file=False):
         # this function is calculating relevant numbers for a analysis
-        profit = self.get_profit()
+        # loading modules to json export
+        import json
+        # getting values for analysis
+        profit = self._get_profit()
         buys, sells = self.get_transaction_count()
-        depot_value = self.get_depot_value()
+        depot_value = self._get_depot_value()
+        # creating dictonary for export
         dic = {
             'Depot': depot_value,
             'Profit': profit,
             'Buys': buys,
             'Sells': sells
         }
+        # checking if needed to export to json file
+        if to_json_file:
+            # creating file
+            with open('/home/niklas/Desktop/TradingBot/Analysis/analysis-model-numbers.json', 'w') as fp:
+                json.dump(dic, fp)
+        # retuning dic
         return dic
 
 
