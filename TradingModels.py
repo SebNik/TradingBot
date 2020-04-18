@@ -14,7 +14,6 @@ class Model(Simulation):
             self.sim_index = index
             self.sim_count = count
 
-
     def run(self):
         # this function will run all coded models
         if self.sim:
