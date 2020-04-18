@@ -224,6 +224,21 @@ class Stock:
         # returning head(1)
         return df.tail(lines)
 
+    def get_transaction_df(self):
+        # loading the needed modules
+        import sqlite3
+        import pandas as pd
+        # setting file path
+        file = '/home/niklas/Desktop/TradingBot/Transactions/Transactions-{}.db'.format(self.symbol)
+        # establishing connection to database
+        conn = sqlite3.connect(self.path_database)
+        # read data which is already in database
+        df = pd.read_sql_query("SELECT * FROM {}".format(self.table_name), conn)
+        # closing connection
+        conn.close()
+        # returning head(1)
+        return df
+
     def get_possible_buy(self, price=0, fraction=1):
         # this function will find out how many units can be bought
         if price == 0:

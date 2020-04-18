@@ -84,13 +84,15 @@ class Model(Simulation):
         # this function will plot a graph which shows the buy and sell times
         # loading modules
         import json
-        import datetime
+        import pandas as pd
         import matplotlib.pyplot as plt
         # reading in json parameters
         with open('/home/niklas/Desktop/TradingBot/Parameters/graph.json') as json_file:
             parameters = json.load(json_file)
-        # changing index of data to date for x axis
+        # changing index of stock data to date for x axis
         self.data.set_index('date', inplace=True)
+        # reading in the transactions data
+
         # creating figure in which deploy
         plt.figure(figsize=(parameters['screen_x'], parameters['screen_y']), dpi=parameters['dpi'])
         # setting style
