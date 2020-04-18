@@ -48,10 +48,11 @@ class Model(Stock):
                 high = float(row['2. high'])
                 low = float(row['3. low'])
                 volume = float(row['5. volume'])
+                date = row['date']
                 # setting last nums
                 self.sim_close = close
                 # calling model
-                self.__simple_high_low(open=open, close=close, high=high, low=low, volume=volume)
+                self.__simple_high_low(open=open, close=close, high=high, low=low, volume=volume, date_sim=date)
 
     def _get_depot_value(self):
         last_price = self.sim_close
