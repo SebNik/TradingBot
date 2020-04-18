@@ -88,15 +88,26 @@ class Model(Simulation):
         import matplotlib.pyplot as plt
         # reading in json parameters
         with open('/home/niklas/Desktop/TradingBot/Parameters/graph.json') as json_file:
-            data = json.load(json_file)
+            parameters = json.load(json_file)
+        # changing index of data to date for x axis
+        self.data.set_index('date', inplace=True)
+        # creating figure in which deploy
+        plt.figure(figsize=(parameters['screen_x'], parameters['screen_y']), dpi=parameters['dpi'])
+        # define title of plot
+        plt.title(**parameters['title'])
+        # setting x-axis and y-axis
+        plt.ylabel(parameters['y_label'])
+        plt.xlabel(parameters['x_label'])
         # starting plotting price line
-        plt.plot(self.data['date'],self.data['4. close'], **data['line1'])
+        self.data['4. close'].plot(**parameters['line1'])
+        # showing the legend
+        plt.legend(**parameters['legend'])
+        # showing the final graph
         plt.show()
 
-        # plt.legend()
         #
         # # Define the label for the title of the figure
-        # plt.title("Returns", fontsize=16)
+        #
         #
         # # Define the labels for x-axis and y-axis
         # plt.ylabel('Cumulative Returns', fontsize=14)
@@ -108,7 +119,7 @@ class Model(Simulation):
 
 
 if __name__ == '__main__':
-    simple_model = Model('IBM',date_range=[[2004, 1, 1], [2004, 12, 31]])
+    simple_model = Model('IBM',date_range=[[2004, 1, 1], [2004, 2, 20]])
     simple_model.run()
     analysis_numbers_dict = simple_model.analysis_numbers(to_json_file=True)
     print(analysis_numbers_dict)

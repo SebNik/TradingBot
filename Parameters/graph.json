@@ -1,8 +1,30 @@
 {
-  "line1":
+  "dpi": 200,
+  "screen_x": 14,
+  "screen_y": 8,
+  "title": {
+    "label": "Transactions vs. Price",
+    "fontsize": 20
+  },
+  "legend": {
+    "fontsize": 12,
+    "shadow": "True",
+    "fancybox": "True",
+    "edgecolor": "black"
+  },
+  "x_label":
   {
+    "xlabel": "Date",
+    "fontsize": 14
+  },
+  "y_label":
+  {
+    "ylabel": "Stock-Price",
+    "fontsize": 14
+  },
+  "line1": {
     "label": "Stock-Price",
     "color": "r",
-    "linewidth": "5"
+    "linewidth": "4"
   }
 }
