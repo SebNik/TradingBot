@@ -31,6 +31,8 @@ class Simulation:
         conn = sqlite3.connect(self.file)
         # reading the database into  pandas dataframe
         df = pd.read_sql_query("SELECT * FROM {}".format(self.table_name), conn)
+        # reversing the dataframe
+        df = df.iloc[::-1]
         # filtering data
         if date_range is not None:
             # setting vars
