@@ -1,16 +1,39 @@
 # this file is going to be filled with models which can trade out stock data
 # loading class for link
-from TradeStocks import Stock
+from SimulationStocks import Simulation
 
 
-class Model(Stock):
+class Model(Simulation):
 
-    def __init__(self, symbol, simulation=True, start_acc=10000, fee=0.01, interval='daily'):
-        super().__init__(symbol, start_acc=start_acc, fee=fee, check_if_exists=False)
+    def __init__(self, symbol, simulation=True, start_acc=10000, fee=0.01, interval='daily', date_range=None):
+        # sim object is being created
+        super().__init__(symbol=symbol, interval=interval, date_range=date_range, start_acc=start_acc, fee=fee)
         self.sim = simulation
         if self.sim:
-            self.date_range = [[2004, 1, 1], [2004, 12, 31]]
-        self.interval = interval
+            row, count, index = self.get_price()
+            self.sim_index = index
+            self.sim_count = count
+
+
+    def run(self):
+        # this function will run all coded models
+        if self.sim:
+            # the simulation mode is on and the simulation is getting called
+            # for loop with real stuff is starting
+            for i in range(0, int(self.sim_count['date'])):
+                # reading new data from simulation
+                row, count, index = self.get_price(index=i)
+                # setting vars for model
+                close = float(row['4. close'])
+                open = float(row['1. open'])
+                high = float(row['2. high'])
+                low = float(row['3. low'])
+                volume = float(row['5. volume'])
+                date = row['date']
+                # setting last nums
+                self.sim_close = close
+                # calling model
+                self.__simple_high_low(open=open, close=close, high=high, low=low, volume=volume, date_sim=date)
 
     def __simple_high_low(self, open=0, close=0, high=0, low=0, volume=0, date_sim=0):
         range_high = 0.9
@@ -27,34 +50,6 @@ class Model(Stock):
         elif open > close:
             abs, units = self.get_possible_sell(price=close, fraction=0.2)
             self.sell(units, price=close, date_sim=date_sim)
-
-    def run(self):
-        # this function will run all coded models
-        if self.sim:
-            # the simulation mode is on and the simulation is getting called
-            # loading in simulation
-            from SimulationStocks import Simulation
-            # object sim is being created
-            sim = Simulation(self.symbol, interval=self.interval, date_range=self.date_range)
-            # data is loaded in for the for loop
-            row, count, index = sim.get_price()
-            self.sim_index = index
-            self.sim_count = count
-            # for loop with real stuff is starting
-            for i in range(0, int(count['date'])):
-                # reading new data from simulation
-                row, count, index = sim.get_price(index=i)
-                # setting vars for model
-                close = float(row['4. close'])
-                open = float(row['1. open'])
-                high = float(row['2. high'])
-                low = float(row['3. low'])
-                volume = float(row['5. volume'])
-                date = row['date']
-                # setting last nums
-                self.sim_close = close
-                # calling model
-                self.__simple_high_low(open=open, close=close, high=high, low=low, volume=volume, date_sim=date)
 
     def _get_depot_value(self):
         last_price = self.sim_close
@@ -92,7 +87,7 @@ class Model(Stock):
 
 
 if __name__ == '__main__':
-    simple_model = Model('IBM')
+    simple_model = Model('IBM',date_range=[[2004, 1, 1], [2004, 12, 31]])
     simple_model.run()
     analysis_numbers_dict = simple_model.analysis_numbers(to_json_file=True)
     print(analysis_numbers_dict)
