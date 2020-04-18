@@ -9,7 +9,7 @@ def api_key_finder():
     import sqlite3
     # 500 requests a day -- 5 per min
 
-    file_api = '/home/niklas/Desktop/TradingBot/api-key_logs.db'
+    file_api = '/home/niklas/Desktop/TradingBot/Parameters/api-key_logs.db'
     if not os.path.isfile(file_api):
         conn = sqlite3.connect(file_api)
         c = conn.cursor()

@@ -8,7 +8,7 @@ class MyTestCase(unittest.TestCase):
         # we test if the right key is selected
         # first we check if the log file is existing
         import os
-        file_api = '/home/niklas/Desktop/TradingBot/api-key_logs.db'
+        file_api = '/Parameters/api-key_logs.db'
         self.assertTrue(os.path.isfile(file_api))
         # secondly we check if the resolution time is right
         from time import gmtime, strftime
