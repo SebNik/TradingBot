@@ -114,6 +114,9 @@ class Model(Simulation):
         ax.grid(**parameters['grid_minor'])
         # starting plotting price line
         plt.plot(self.data['date'], self.data['4. close'], **parameters['line1'])
+        # SMA Plotting
+        plt.plot(self.data['date'], self.data['4. close'].rolling(50).mean())
+        plt.plot(self.data['date'], self.data['4. close'].rolling(10).mean())
         # plotting the point of buy
         plt.scatter(buy_transactions['Time'], buy_transactions['price_each'], **parameters['scatter_buy'])
         # plotting the point of sell
