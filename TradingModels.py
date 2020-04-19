@@ -98,12 +98,15 @@ class Model(Simulation):
         buy_transactions = df_transactions[df_transactions['ID_Function'] == 'S-BUY']
         sell_transactions = df_transactions[df_transactions['ID_Function'] == 'S-SELL']
 
+
         #df_transactions.set_index('Time', inplace=True)
+        #buy_transactions.set_index('Time', inplace=True)
         # filtering the data with buy and sell
 
         print(buy_transactions.head(15))
         # creating figure in which deploy
-        plt.figure(figsize=(parameters['screen_x'], parameters['screen_y']), dpi=parameters['dpi'])
+        fig=plt.figure(figsize=(parameters['screen_x'], parameters['screen_y']), dpi=parameters['dpi'])
+        ax = fig.add_subplot(111)
         # setting style
         #plt.style.use('seaborn-darkgrid')
         # define title of plot
@@ -112,11 +115,21 @@ class Model(Simulation):
         plt.ylabel(parameters['y_label']['label'], parameters['y_label'])
         plt.xlabel(parameters['x_label']['label'], parameters['x_label'])
         # grid settings
-        plt.grid(b=True, **parameters['grid'])
+        #plt.grid(b=True, **parameters['grid'])
         # starting plotting price line
         #self.data['4. close'].plot(**parameters['line1'])
+        #df_transactions['price_each'].plot(**parameters['line1'])
+        #buy_transactions['price_each'].plot()
         plt.plot(df_transactions['Time'], df_transactions['price_each'], **parameters['line1'])
         plt.scatter(buy_transactions['Time'], buy_transactions['price_each'])
+        import numpy as np
+        plt.xticks(np.arange(len(self.dates_list)),self.dates_list,rotation=30)
+        spacing=2
+        for label in ax.xaxis.get_ticklabels()[::spacing]:
+            label.set_visible(False)
+
+        #plt.set_xticks(np.arange(len(short_dates)))
+        #ax.set_xticklabels(short_dates)
         # showing the legend
         plt.legend(**parameters['legend'])
         # showing the final graph

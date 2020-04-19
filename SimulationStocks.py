@@ -46,6 +46,7 @@ class Simulation(Stock):
             dates_list = pd.bdate_range(datetime.datetime.utcfromtimestamp(self.date1).strftime('%Y-%m-%d %H:%M:%S'),
                                         datetime.datetime.utcfromtimestamp(self.date2).strftime('%Y-%m-%d %H:%M:%S')
                                         ).strftime("%Y-%m-%d").tolist()
+            self.dates_list=dates_list
             df_filtered = df[df['date'].isin(dates_list)]
             self.data = df_filtered
             self.data.reset_index(inplace=True, drop=True)
