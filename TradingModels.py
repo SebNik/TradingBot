@@ -95,44 +95,33 @@ class Model(Simulation):
         # reading in the transactions data
         df_transactions = self.get_transaction_df()
         df_transactions['Time'] = df_transactions['Time'].apply(lambda x: datetime.datetime.utcfromtimestamp(float(x)).strftime('%Y-%m-%d'))
-
+        # filtering the data with buy and sell
         buy_transactions = df_transactions[df_transactions['ID_Function'] == 'S-BUY']
         sell_transactions = df_transactions[df_transactions['ID_Function'] == 'S-SELL']
-
-
-        #df_transactions.set_index('Time', inplace=True)
-        #buy_transactions.set_index('Time', inplace=True)
-        # filtering the data with buy and sell
-
-        print(buy_transactions['price_each'].head(15))
         # creating figure in which deploy
         fig=plt.figure(figsize=(parameters['screen_x'], parameters['screen_y']), dpi=parameters['dpi'])
         ax = fig.add_subplot(111)
-        # setting style
-        #plt.style.use('seaborn-darkgrid')
         # define title of plot
-        #plt.title(**parameters['title'])
+        plt.title(**parameters['title'])
         # setting x-axis and y-axis
-        #plt.ylabel(parameters['y_label']['label'], parameters['y_label'])
-        #plt.xlabel(parameters['x_label']['label'], parameters['x_label'])
+        plt.ylabel(parameters['y_label']['label'], parameters['y_label'])
+        plt.xlabel(parameters['x_label']['label'], parameters['x_label'])
         # grid settings
-        #plt.grid(b=True, **parameters['grid'])
+        plt.grid(b=True, **parameters['grid'])
         # starting plotting price line
-        #self.data['4. close'].plot(**parameters['line1'])
-        #df_transactions['price_each'].plot(**parameters['line1'])
-        #buy_transactions['price_each'].plot()
-        #plt.plot(df_transactions['Time'], df_transactions['price_each'], **parameters['line1'])
-        plt.plot(self.data['date'], self.data['4. close'])
-        plt.scatter(buy_transactions['Time'], buy_transactions['price_each'])
+        plt.plot(self.data['date'], self.data['4. close'], **parameters['line1'])
+        # plotting the point of buy
+        plt.scatter(buy_transactions['Time'], buy_transactions['price_each'], **parameters['scatter_buy'])
+        # plotting the point of sell
+        plt.scatter(sell_transactions['Time'], sell_transactions['price_each'], **parameters['scatter_sell'])
+        # setting x ticks
         plt.xticks(np.arange(len(self.dates_list)),self.dates_list,rotation=30)
+        # removing every spacing-t x tick
         spacing=2
         for label in ax.xaxis.get_ticklabels()[::spacing]:
             label.set_visible(False)
-
-        #plt.set_xticks(np.arange(len(short_dates)))
-        #ax.set_xticklabels(short_dates)
         # showing the legend
-        #plt.legend(**parameters['legend'])
+        plt.legend(**parameters['legend'])
         # showing the final graph
         plt.show()
 

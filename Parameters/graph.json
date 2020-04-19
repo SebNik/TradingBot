@@ -33,5 +33,21 @@
     "label": "Stock-Price",
     "color": "b",
     "linewidth": "4"
+  },
+  "scatter_buy":
+  {
+    "c": "g",
+    "label": "Buy-Points",
+    "marker": "X",
+    "edgecolors" :"black",
+    "s": 125
+  },
+  "scatter_sell":
+  {
+    "c": "r",
+    "label": "Sell-Points",
+    "marker": "X",
+    "edgecolors" :"black",
+    "s": 125
   }
 }
