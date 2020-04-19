@@ -35,18 +35,10 @@ class Model(Simulation):
                 self.__simple_high_low(open=open, close=close, high=high, low=low, volume=volume, date_sim=date)
 
     def __simple_high_low(self, open=0, close=0, high=0, low=0, volume=0, date_sim=0):
-        range_high = 0.9
-        range_low = 1.1
-        if open < close and high * range_high < close:
-            units = self.get_possible_buy(price=close, fraction=0.5)
-            self.buy(units, price=close, date_sim=date_sim)
-        elif open < close:
+        if open > close:
             units = self.get_possible_buy(price=close, fraction=0.2)
             self.buy(units, price=close, date_sim=date_sim)
-        elif open > close and low * range_low > close:
-            abs, units = self.get_possible_sell(price=close, fraction=0.5)
-            self.sell(units, price=close, date_sim=date_sim)
-        elif open > close:
+        elif open < close:
             abs, units = self.get_possible_sell(price=close, fraction=0.2)
             self.sell(units, price=close, date_sim=date_sim)
 
@@ -132,4 +124,5 @@ if __name__ == '__main__':
     simple_model = Model('IBM', date_range=[[2004, 1, 1], [2004, 2, 20]])
     simple_model.run()
     analysis_numbers_dict = simple_model.analysis_numbers(to_json_file=True)
+    print(analysis_numbers_dict)
     simple_model.analysis_transaction_time_graph()
