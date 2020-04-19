@@ -53,13 +53,16 @@ class Stock:
         import os
         import sqlite3
         import pandas as pd
+        from pytz import timezone
         from datetime import datetime
         # checking for database
         # creating path
         file = '/home/niklas/Desktop/TradingBot/Transactions/Transactions-{}.db'.format(self.symbol)
         # checking if sim is running and then replacing timestamp with sim data
         if date_sim != 0:
-            timestamp = str(float(datetime.strptime(date_sim, "%Y-%m-%d").timestamp()))
+            dt=datetime.strptime(date_sim, "%Y-%m-%d")
+            datetime_obj_utc = dt.replace(tzinfo=timezone('UTC'))
+            timestamp = str(float(datetime_obj_utc.timestamp()))
         else:
             # getting current time
             now = datetime.now()
