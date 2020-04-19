@@ -12,12 +12,21 @@
     "fancybox": "True",
     "edgecolor": "black"
   },
-  "grid":
+  "grid_major":
   {
     "which": "major",
-    "linestyle": "-.",
+    "linestyle": "--",
     "color": "gray",
-    "linewidth": 1
+    "linewidth": 2,
+    "alpha": 0.7
+  },
+  "grid_minor":
+  {
+    "which": "minor",
+    "linestyle": "--",
+    "color": "gray",
+    "linewidth": 1,
+    "alpha": 0.2
   },
   "x_label":
   {
@@ -29,10 +38,20 @@
     "label": "Stock-Price",
     "fontsize": 13
   },
+  "x_ticks":
+  {
+    "rotation": 30
+  },
+  "x_ticks_cal":
+  {
+    "minor_factor": 0.02,
+    "major_factor": 0.08
+  },
   "line1": {
     "label": "Stock-Price",
     "color": "b",
-    "linewidth": "4"
+    "linewidth": "3",
+    "clip_on": "False"
   },
   "scatter_buy":
   {

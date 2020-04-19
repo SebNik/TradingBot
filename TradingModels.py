@@ -82,47 +82,42 @@ class Model(Simulation):
         # reading in json parameters
         with open('/home/niklas/Desktop/TradingBot/Parameters/graph.json') as json_file:
             parameters = json.load(json_file)
-        # changing index of stock data to date for x axis
-        #self.data.set_index('date', inplace=True)
         # reading in the transactions data
         df_transactions = self.get_transaction_df()
-        df_transactions['Time'] = df_transactions['Time'].apply(lambda x: datetime.datetime.utcfromtimestamp(float(x)).strftime('%Y-%m-%d'))
+        df_transactions['Time'] = df_transactions['Time'].apply(
+            lambda x: datetime.datetime.utcfromtimestamp(float(x)).strftime('%Y-%m-%d'))
         # filtering the data with buy and sell
         buy_transactions = df_transactions[df_transactions['ID_Function'] == 'S-BUY']
         sell_transactions = df_transactions[df_transactions['ID_Function'] == 'S-SELL']
         # creating figure in which deploy
-        fig=plt.figure(figsize=(parameters['screen_x'], parameters['screen_y']), dpi=parameters['dpi'])
+        fig = plt.figure(figsize=(parameters['screen_x'], parameters['screen_y']), dpi=parameters['dpi'])
         ax = fig.add_subplot(111)
         # define title of plot
         plt.title(**parameters['title'])
         # setting x-axis and y-axis
         plt.ylabel(parameters['y_label']['label'], parameters['y_label'])
         plt.xlabel(parameters['x_label']['label'], parameters['x_label'])
-        # grid settings
-        #plt.grid(**parameters['grid'])
+        # setting x ticks rotation
+        plt.xticks(**parameters["x_ticks"])
+        # getting row count
+        row_count = int(self.data.count()['date'])
+        # creating list with arrange and spacing
+        major_ticks = np.arange(0, row_count, int(row_count * parameters['x_ticks_cal']['major_factor']))
+        minor_ticks = np.arange(0, row_count, int(row_count * parameters['x_ticks_cal']['minor_factor']))
+        # defining ticks with major or minor
+        ax.set_xticks(major_ticks)
+        ax.set_xticks(minor_ticks, minor=True)
+        # activating both grids
+        ax.grid(which='both')
+        # setting parameters for grids
+        ax.grid(**parameters['grid_major'])
+        ax.grid(**parameters['grid_minor'])
         # starting plotting price line
         plt.plot(self.data['date'], self.data['4. close'], **parameters['line1'])
         # plotting the point of buy
         plt.scatter(buy_transactions['Time'], buy_transactions['price_each'], **parameters['scatter_buy'])
         # plotting the point of sell
         plt.scatter(sell_transactions['Time'], sell_transactions['price_each'], **parameters['scatter_sell'])
-        # setting x ticks
-        plt.xticks(np.arange(len(self.dates_list)),self.dates_list,rotation=30)
-        # removing every spacing-t x tick
-        #n=12
-        #[l.set_visible(False) for (i, l) in enumerate(ax.xaxis.get_ticklabels()) if i % n != 0]
-        major_ticks = np.arange(0, 261, 20)
-        minor_ticks = np.arange(0, 261, 5)
-
-        ax.set_xticks(major_ticks)
-        ax.set_xticks(minor_ticks, minor=True)
-
-        # And a corresponding grid
-        ax.grid(which='both')
-
-        # Or if you want different settings for the grids:
-        ax.grid(which='minor', alpha=0.2)
-        ax.grid(which='major', alpha=0.5)
         # showing the legend
         plt.legend(**parameters['legend'])
         # saving picture
