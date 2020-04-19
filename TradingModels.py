@@ -99,7 +99,7 @@ class Model(Simulation):
         plt.ylabel(parameters['y_label']['label'], parameters['y_label'])
         plt.xlabel(parameters['x_label']['label'], parameters['x_label'])
         # grid settings
-        plt.grid(b=True, **parameters['grid'])
+        #plt.grid(**parameters['grid'])
         # starting plotting price line
         plt.plot(self.data['date'], self.data['4. close'], **parameters['line1'])
         # plotting the point of buy
@@ -109,9 +109,20 @@ class Model(Simulation):
         # setting x ticks
         plt.xticks(np.arange(len(self.dates_list)),self.dates_list,rotation=30)
         # removing every spacing-t x tick
-        spacing=2
-        for label in ax.xaxis.get_ticklabels()[::spacing]:
-            label.set_visible(False)
+        #n=12
+        #[l.set_visible(False) for (i, l) in enumerate(ax.xaxis.get_ticklabels()) if i % n != 0]
+        major_ticks = np.arange(0, 261, 20)
+        minor_ticks = np.arange(0, 261, 5)
+
+        ax.set_xticks(major_ticks)
+        ax.set_xticks(minor_ticks, minor=True)
+
+        # And a corresponding grid
+        ax.grid(which='both')
+
+        # Or if you want different settings for the grids:
+        ax.grid(which='minor', alpha=0.2)
+        ax.grid(which='major', alpha=0.5)
         # showing the legend
         plt.legend(**parameters['legend'])
         # saving picture
@@ -121,7 +132,7 @@ class Model(Simulation):
 
 
 if __name__ == '__main__':
-    simple_model = Model('IBM', date_range=[[2004, 1, 1], [2004, 2, 20]])
+    simple_model = Model('IBM', date_range=[[2004, 1, 1], [2004, 12, 30]])
     simple_model.run()
     analysis_numbers_dict = simple_model.analysis_numbers(to_json_file=True)
     print(analysis_numbers_dict)
