@@ -94,11 +94,18 @@ class Model(Simulation):
         # reading in the transactions data
         df_transactions = self.get_transaction_df()
         df_transactions['Time'] = df_transactions['Time'].apply(lambda x: datetime.datetime.utcfromtimestamp(float(x)).strftime('%Y-%m-%d'))
-        df_transactions.set_index('Time', inplace=True)
+
+        buy_transactions = df_transactions[df_transactions['ID_Function'] == 'S-BUY']
+        sell_transactions = df_transactions[df_transactions['ID_Function'] == 'S-SELL']
+
+        #df_transactions.set_index('Time', inplace=True)
+        # filtering the data with buy and sell
+
+        print(buy_transactions.head(15))
         # creating figure in which deploy
         plt.figure(figsize=(parameters['screen_x'], parameters['screen_y']), dpi=parameters['dpi'])
         # setting style
-        plt.style.use('seaborn-darkgrid')
+        #plt.style.use('seaborn-darkgrid')
         # define title of plot
         plt.title(**parameters['title'])
         # setting x-axis and y-axis
@@ -107,9 +114,11 @@ class Model(Simulation):
         # grid settings
         plt.grid(b=True, **parameters['grid'])
         # starting plotting price line
-        self.data['4. close'].plot(**parameters['line1'])
+        #self.data['4. close'].plot(**parameters['line1'])
+        plt.plot(df_transactions['Time'], df_transactions['price_each'], **parameters['line1'])
+        plt.scatter(buy_transactions['Time'], buy_transactions['price_each'])
         # showing the legend
-        # plt.legend(**parameters['legend'])
+        plt.legend(**parameters['legend'])
         # showing the final graph
         plt.show()
 
