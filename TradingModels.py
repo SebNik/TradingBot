@@ -122,6 +122,8 @@ class Model(Simulation):
             label.set_visible(False)
         # showing the legend
         plt.legend(**parameters['legend'])
+        # saving picture
+        plt.savefig('/home/niklas/Desktop/TradingBot/Analysis/Images/' + str(datetime.datetime.now()) + '.png')
         # showing the final graph
         plt.show()
 
