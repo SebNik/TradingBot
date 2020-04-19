@@ -101,7 +101,7 @@ class Model(Simulation):
 
 
         #df_transactions.set_index('Time', inplace=True)
-        buy_transactions.set_index('Time', inplace=True)
+        #buy_transactions.set_index('Time', inplace=True)
         # filtering the data with buy and sell
 
         print(buy_transactions['price_each'].head(15))
@@ -141,4 +141,4 @@ if __name__ == '__main__':
     simple_model = Model('IBM', date_range=[[2004, 1, 1], [2004, 2, 20]])
     simple_model.run()
     analysis_numbers_dict = simple_model.analysis_numbers(to_json_file=True)
-    #simple_model.analysis_transaction_time_graph()
+    simple_model.analysis_transaction_time_graph()
