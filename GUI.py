@@ -1,24 +1,29 @@
 # this file is responsible for all the graphics
 # importing modules used here
-from PyQt5.QtWidgets import QApplication, QLabel, QMainWindow
-from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import *
+from PyQt5.QtGui import QIcon
 
 
 class MainWindow(QMainWindow):
 
     def __init__(self, *args, **kwargs):
+        # setting all the important things for main window
         super(MainWindow, self).__init__(*args, **kwargs)
+        # setting the variables for window
+        self.left = 50
+        self.right = 50
+        self.width = 1700
+        self.height = 1000
+        # setting all paths
+        self.icon_path = '/home/niklas/Desktop/TradingBot/GUI/Icon/icon1.jpg'
+        # setting the full graphics up
+        self.initUI()
 
-        self.setWindowTitle("My Awesome App")
-
-        label = QLabel("This is a PyQt5 window!")
-
-        # The `Qt` namespace has a lot of attributes to customise
-        label.setAlignment(Qt.AlignCenter)
-
-        # Set the central widget of the Window. Widget will expand
-        # to take up all the space in the window by default.
-        self.setCentralWidget(label)
+    def initUI(self):
+        self.setGeometry(self.left, self.right, self.width, self.height)
+        self.setWindowTitle('My Trading App')
+        self.setWindowIcon(QIcon(self.icon_path))
+        print('lol')
 
 
 if __name__ == "__main__":
