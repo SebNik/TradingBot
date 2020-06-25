@@ -32,7 +32,6 @@ class MatplotlibWidget(QMainWindow):
 
         cosinus_signal = np.cos(2 * np.pi * f * t)
         sinus_signal = np.sin(2 * np.pi * f * t)
-        print('lalalla')
         self.MplWidget.canvas.axes.clear()
         self.MplWidget.canvas.axes.plot(t, cosinus_signal)
         self.MplWidget.canvas.axes.plot(t, sinus_signal)
