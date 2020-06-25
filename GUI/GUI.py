@@ -15,7 +15,7 @@ class MatplotlibWidget(QMainWindow):
     def __init__(self):
         QMainWindow.__init__(self)
 
-        loadUi("/home/niklas/Desktop/TradingBot/ui/mainwindow.ui", self)
+        loadUi("/home/niklas/Desktop/TradingBot/GUI/ui/mainwindow.ui", self)
 
         self.setWindowTitle("PyQt5 & Matplotlib Example GUI")
 
